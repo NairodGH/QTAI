@@ -1,6 +1,6 @@
 #include <QtWidgets/QApplication>
 #include "QTAI.h"
-#include "knn.h"
+#include "knn.hpp"
 #include "DataHandler.hpp"
 #include "kmeans.hpp"
 
@@ -35,16 +35,13 @@ int main(int argc, char *argv[])
     int best_k = 1;
     for(int k = 1; k <= 3; k++)
     {
-        if(k == 1)
-        {
+        if(k == 1) {
             performance = nearest->validate_perforamnce();
             best_performance = performance;
-        } else 
-        {
+        } else {
             nearest->set_k(k);
             performance = nearest->validate_perforamnce();
-            if(performance > best_performance)
-            {
+            if(performance > best_performance) {
                 best_performance = performance;
                 best_k = k;
             }
@@ -52,11 +49,11 @@ int main(int argc, char *argv[])
     }
     nearest->set_k(best_k);
     nearest->test_performance();
+
     /*double performance = 0;
     double best_performance = 0;
     int best_k = 1;
-    for(int k = dh->get_class_counts(); k < dh->get_training_data()->size()*0.1; k++)
-    {
+    for(int k = 1; k < dh->get_training_data()->size()*0.1; k++) {
         kmeans *km = new kmeans(k);
         km->set_training_data(dh->get_training_data());
         km->set_test_data(dh->get_test_data());
@@ -65,8 +62,7 @@ int main(int argc, char *argv[])
         km->train();
         performance = km->validate();
         printf("Current Perforamnce @ K = %d: %.2f\n", k, performance);
-        if(performance > best_performance)
-        {
+        if(performance > best_performance) {
             best_performance = performance;
             best_k = k;
         }

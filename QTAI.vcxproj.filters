@@ -69,7 +69,7 @@
     <ClInclude Include="kmeans.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="knn.h">
+    <ClInclude Include="knn.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

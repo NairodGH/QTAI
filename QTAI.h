@@ -7,10 +7,10 @@ class QTAI : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    QTAI(QWidget *parent = nullptr);
-    ~QTAI();
+    public:
+        QTAI(QWidget *parent = nullptr);
+        ~QTAI();
 
-private:
-    Ui::QTAIClass ui;
+    private:
+        Ui::QTAIClass ui;
 };
