@@ -43,33 +43,33 @@
     <ClCompile Include="common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="data.cpp">
+    <ClCompile Include="Data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DataHandler.cpp">
+    <ClCompile Include="ETL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kmeans.cpp">
+    <ClCompile Include="Kmeans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="knn.cpp">
+    <ClCompile Include="KNN.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common.hpp">
+    <ClInclude Include="Sets.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="data.hpp">
+    <ClInclude Include="Data.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DataHandler.hpp">
+    <ClInclude Include="ETL.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="kmeans.hpp">
+    <ClInclude Include="Kmeans.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="knn.hpp">
+    <ClInclude Include="KNN.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

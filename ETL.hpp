@@ -1,22 +1,14 @@
-#ifndef __DATA_HANDLER_H
-#define __DATA_HANDLER_H
+#pragma once
 
-#include "fstream"
-#include "stdint.h"
-#include "data.hpp"
-#include <vector>
-#include <string>
-#include <map>
-#include <unordered_set>
-#include <random>
+#include "Data.hpp"
 
-class data_handler
+class ETL
 {
     private:
-        std::vector<data *> *data_array; // all of the data
-        std::vector<data *> *training_data;
-        std::vector<data *> *test_data;
-        std::vector<data *> *validation_data;
+        std::vector<Data *> *data_array; // all of the Data
+        std::vector<Data *> *training_data;
+        std::vector<Data *> *test_data;
+        std::vector<Data *> *validation_data;
         int class_counts;
         int feature_vector_size;
         std::map<uint8_t, int> class_map;
@@ -26,8 +18,8 @@ class data_handler
         const double TEST_SET_PERCENT = 0.20;
         const double VALID_SET_PERCENT = 0.05;
 
-        data_handler();
-        ~data_handler();
+        ETL();
+        ~ETL();
 
         void read_input_data(std::string path);
         void read_label_data(std::string path);
@@ -42,8 +34,7 @@ class data_handler
 
         uint32_t fix_endianness(const unsigned char* bytes);
 
-        std::vector<data *> * get_training_data();
-        std::vector<data *> * get_test_data();
-        std::vector<data *> * get_validation_data();
+        std::vector<Data *> * get_training_data();
+        std::vector<Data *> * get_test_data();
+        std::vector<Data *> * get_validation_data();
 };
-#endif

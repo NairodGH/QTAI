@@ -1,26 +1,18 @@
-#ifndef __KMEANS_HPP
-#define __KMEANS_HPP
+#pragma once
 
-#include "common.hpp"
-#include <unordered_set>
-#include <limits>
-#include <vector>
-#include <cstdlib>
-#include <cmath>
-#include <map>
-#include "DataHandler.hpp"
+#include "Sets.hpp"
 
 typedef struct cluster 
 {
     std::vector<double> *centroid;
-    std::vector<data *> *cluster_points;
+    std::vector<Data *> *cluster_points;
     std::map<int, int> class_counts;
     int most_frequent_class;
 
-    cluster(data *initial_point)
+    cluster(Data *initial_point)
     {
         centroid = new std::vector<double>;
-        cluster_points = new std::vector<data *>;
+        cluster_points = new std::vector<Data *>;
         for(auto val : *(initial_point->get_feature_vector()))
             centroid->push_back(val);
         cluster_points->push_back(initial_point);
@@ -28,7 +20,7 @@ typedef struct cluster
         most_frequent_class = initial_point->get_label();
     }
 
-    void add_to_cluster(data *point)
+    void add_to_cluster(Data *point)
     {
         int previous_size = cluster_points->size();
 
@@ -62,19 +54,18 @@ typedef struct cluster
     }
 } cluster_t;
 
-class kmeans : public common_data
+class Kmeans : public Sets
 {
     private:
         int num_clusters;
         std::vector<cluster_t *> *clusters;
         std::unordered_set<int> *used_indexes;
     public:
-        kmeans(int k);
+        Kmeans(int k);
         void init_clusters();
         void init_clusters_for_each_class();
         void train();
-        double euclidean_distance(std::vector<double> *, data *);
+        double euclidean_distance(std::vector<double> *, Data *);
         double validate();
         double test();
 };
-#endif

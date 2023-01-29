@@ -1,8 +1,8 @@
 #include <QtWidgets/QApplication>
 #include "QTAI.h"
-#include "knn.hpp"
-#include "DataHandler.hpp"
-#include "kmeans.hpp"
+#include "KNN.hpp"
+#include "ETL.hpp"
+#include "Kmeans.hpp"
 
 #define DEBUG
 
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QTAI qtai;
-    data_handler *dh = new data_handler();
+    ETL *dh = new ETL();
 
     #ifdef DEBUG
         if(AttachConsole(ATTACH_PARENT_PROCESS) || AllocConsole())
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     dh->read_label_data("train-labels-idx1-ubyte");
     dh->count_classes();
     dh->split_data();
-    knn *nearest = new knn();
+    KNN *nearest = new KNN();
     nearest->set_k(1);
     nearest->set_training_data(dh->get_training_data());
     nearest->set_test_data(dh->get_test_data());
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     double best_performance = 0;
     int best_k = 1;
     for(int k = 1; k < dh->get_training_data()->size()*0.1; k++) {
-        kmeans *km = new kmeans(k);
+        Kmeans *km = new Kmeans(k);
         km->set_training_data(dh->get_training_data());
         km->set_test_data(dh->get_test_data());
         km->set_validation_data(dh->get_validation_data());
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
             best_k = k;
         }
     }
-    kmeans *km = new kmeans(best_k);
+    Kmeans *km = new Kmeans(best_k);
     km->set_training_data(dh->get_training_data());
     km->set_test_data(dh->get_test_data());
     km->set_validation_data(dh->get_validation_data());

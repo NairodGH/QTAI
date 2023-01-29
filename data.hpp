@@ -1,11 +1,8 @@
-#ifndef __DATA_H
-#define __DATA_H
+#pragma once
 
-#include <vector>
-#include "stdint.h" // uint8_t 
-#include "stdio.h"
+#include "main.hpp"
 
-class data
+class Data
 {
     std::vector<uint8_t> *m_feature_vector;
     uint8_t m_label;
@@ -28,5 +25,3 @@ public:
     std::vector<uint8_t> *get_feature_vector();
 
 };
-
-#endif

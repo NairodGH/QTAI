@@ -1,27 +1,25 @@
-#ifndef __KNN_H
-#define __KNN_H
+#pragma once
 
-#include "common.hpp"
+#include "Sets.hpp"
 
-// O(k*n) where k is the number of neighbors and N is the size of training data
+// O(k*n) where k is the number of neighbors and N is the size of training Data
 // O(n) + O(k*n) + k
 
-class knn : public common_data
+class KNN : public Sets
 {
     private:
         int k;
-        std::vector<data *> * neighbors;
+        std::vector<Data *> * neighbors;
 
     public:
-        knn(int);
-        knn();
-        ~knn();
+        KNN(int);
+        KNN();
+        ~KNN();
 
-        void find_knearest(data *query_point);
+        void find_knearest(Data *query_point);
         void set_k(int val);
         int find_most_frequent_class();
-        double calculate_distance(data* query_point, data* input);
+        double calculate_distance(Data* query_point, Data* input);
         double validate_perforamnce();
         double test_performance();
 };
-#endif

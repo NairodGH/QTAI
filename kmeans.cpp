@@ -1,13 +1,13 @@
-#include "kmeans.hpp"
+#include "Kmeans.hpp"
 
-kmeans::kmeans(int k)
+Kmeans::Kmeans(int k)
 {
     num_clusters = k;
     clusters = new std::vector<cluster_t *>;
     used_indexes = new std::unordered_set<int>;
 }
 
-void kmeans::init_clusters()
+void Kmeans::init_clusters()
 {
     for(int i = 0, index = 0; i < num_clusters; i++) {
         while(used_indexes->find(index) != used_indexes->end())
@@ -17,7 +17,7 @@ void kmeans::init_clusters()
     }
 }
 
-void kmeans::init_clusters_for_each_class()
+void Kmeans::init_clusters_for_each_class()
 {
     std::unordered_set<int> classes_used;
 
@@ -30,7 +30,7 @@ void kmeans::init_clusters_for_each_class()
     }
 }
 
-void kmeans::train()
+void Kmeans::train()
 {
     for (int index = 0; used_indexes->size() < training_data->size(); ) {
         while(used_indexes->find(index) != used_indexes->end())
@@ -49,7 +49,7 @@ void kmeans::train()
     }
 }
 
-double kmeans::euclidean_distance(std::vector<double> *centroid, data *query_point)
+double Kmeans::euclidean_distance(std::vector<double> *centroid, Data *query_point)
 {
     double dist = 0.0;
 
@@ -58,7 +58,7 @@ double kmeans::euclidean_distance(std::vector<double> *centroid, data *query_poi
     return sqrt(dist);
 }
 
-double kmeans::validate()
+double Kmeans::validate()
 {
     double num_correct = 0.0;
 
@@ -78,7 +78,7 @@ double kmeans::validate()
     return 100.0 * (num_correct / (double) validation_data->size());
 }
 
-double kmeans::test()
+double Kmeans::test()
 {
     double num_correct = 0.0;
 
@@ -100,7 +100,7 @@ double kmeans::test()
 //int
 //main()
 //{
-//    data_handler *dh = new data_handler();
+//    ETL *dh = new ETL();
 //    dh->read_input_data("../train-images-idx3-ubyte");
 //    dh->read_label_data("../train-labels-idx1-ubyte");
 //    dh->count_classes();
@@ -110,7 +110,7 @@ double kmeans::test()
 //    int best_k = 1;
 //    for(int k = dh->get_class_counts(); k < dh->get_training_data()->size()*0.1; k++)
 //    {
-//        kmeans *km = new kmeans(k);
+//        Kmeans *km = new Kmeans(k);
 //        km->set_training_data(dh->get_training_data());
 //        km->set_test_data(dh->get_test_data());
 //        km->set_validation_data(dh->get_validation_data());
@@ -124,7 +124,7 @@ double kmeans::test()
 //            best_k = k;
 //        }
 //    }
-//    kmeans *km = new kmeans(best_k);
+//    Kmeans *km = new Kmeans(best_k);
 //    km->set_training_data(dh->get_training_data());
 //    km->set_test_data(dh->get_test_data());
 //    km->set_validation_data(dh->get_validation_data());

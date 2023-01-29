@@ -1,29 +1,29 @@
-#include "knn.hpp"
+#include "KNN.hpp"
 #include <cmath>
 #include <limits>
 #include <map>
 #include "stdint.h"
-#include "DataHandler.hpp"
+#include "ETL.hpp"
 
 
-knn::knn(int val)
+KNN::KNN(int val)
 {
     k = val;
 }
 
-knn::knn()
+KNN::KNN()
 {
 
 }
 
-knn::~knn()
+KNN::~KNN()
 {
     // NOTHING TO DO 
 }
 
-void knn::find_knearest(data *query_point)
+void KNN::find_knearest(Data *query_point)
 {
-    neighbors = new std::vector<data *>;
+    neighbors = new std::vector<Data *>;
     double min = std::numeric_limits<double>::max();
     double previous_min = min;
     
@@ -55,12 +55,12 @@ void knn::find_knearest(data *query_point)
     }
 }
 
-void knn::set_k(int val)
+void KNN::set_k(int val)
 {
     k = val;
 }
 
-int knn::find_most_frequent_class()
+int KNN::find_most_frequent_class()
 {
     std::map<uint8_t, int> freq_map;
 
@@ -86,7 +86,7 @@ int knn::find_most_frequent_class()
 
 }
 
-double knn::calculate_distance(data* query_point, data* input)
+double KNN::calculate_distance(Data* query_point, Data* input)
 {
     double value = 0;
 
@@ -99,13 +99,13 @@ double knn::calculate_distance(data* query_point, data* input)
     return sqrt(value);
 }
 
-double knn::validate_perforamnce()
+double KNN::validate_perforamnce()
 {
     double current_performance = 0;
     int count = 0;
     int data_index = 0;
 
-    for(data *query_point : *validation_data) {
+    for(Data *query_point : *validation_data) {
         find_knearest(query_point);
         int prediction = find_most_frequent_class();
         data_index++;
@@ -117,11 +117,11 @@ double knn::validate_perforamnce()
     printf("Validation Performance for K = %d: %.3f\n", k, current_performance);
     return current_performance;
 }
-double knn::test_performance()
+double KNN::test_performance()
 {
     double current_performance = 0;
     int count = 0;
-    for(data *query_point : *test_data) {
+    for(Data *query_point : *test_data) {
         find_knearest(query_point);
         int prediction = find_most_frequent_class();
         if(prediction == query_point->get_label())
@@ -135,12 +135,12 @@ double knn::test_performance()
 //int
 //main()
 //{
-//    data_handler *dh = new data_handler();
+//    ETL *dh = new ETL();
 //    dh->read_input_data("../train-images-idx3-ubyte");
 //    dh->read_label_data("../train-labels-idx1-ubyte");
 //    dh->count_classes();
 //    dh->split_data();
-//    knn *nearest = new knn();
+//    KNN *nearest = new KNN();
 //    nearest->set_k(1);
 //    nearest->set_training_data(dh->get_training_data());
 //    nearest->set_test_data(dh->get_test_data());

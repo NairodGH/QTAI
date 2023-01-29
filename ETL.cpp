@@ -1,19 +1,19 @@
-#include "DataHandler.hpp"
+#include "ETL.hpp"
 
-data_handler::data_handler()
+ETL::ETL()
 {
-    data_array = new std::vector<data *>;
-    training_data = new std::vector<data *>;
-    test_data = new std::vector<data *>;
-    validation_data = new std::vector<data *>;
+    data_array = new std::vector<Data *>;
+    training_data = new std::vector<Data *>;
+    test_data = new std::vector<Data *>;
+    validation_data = new std::vector<Data *>;
 }
 
-data_handler::~data_handler()
+ETL::~ETL()
 {
     // FIX ME
 }
 
-void data_handler::read_input_data(std::string path)
+void ETL::read_input_data(std::string path)
 {
     uint32_t header[4];
     unsigned char bytes[4];
@@ -26,7 +26,7 @@ void data_handler::read_input_data(std::string path)
         printf("Done getting file header.\n");
         uint32_t image_size = header[2] * header[3];
         for(size_t i = 0; i < header[1]; i++) {
-            data *d = new data();
+            Data *d = new Data();
             d->set_feature_vector(new std::vector<uint8_t>());
             uint8_t element[1];
             for(int j = 0; j < image_size; j++)
@@ -35,7 +35,7 @@ void data_handler::read_input_data(std::string path)
             data_array->push_back(d);
         }
         feature_vector_size = data_array->at(0)->get_feature_vector()->size();
-        printf("Successfully read %zu data entries.\n", data_array->size());
+        printf("Successfully read %zu Data entries.\n", data_array->size());
         printf("The Feature Vector Size is: %d\n", feature_vector_size);
     } else {
         printf("Invalid Input File Path\n");
@@ -43,7 +43,7 @@ void data_handler::read_input_data(std::string path)
     }
 }
 
-void data_handler::read_label_data(std::string path)
+void ETL::read_label_data(std::string path)
 {
     uint32_t magic = 0;
     uint32_t num_images = 0;
@@ -77,7 +77,7 @@ void data_handler::read_label_data(std::string path)
     }
 }
 
-void data_handler::split_data()
+void ETL::split_data()
 {
     int train_size = data_array->size() * TRAIN_SET_PERCENT;
     int test_size = data_array->size() * TEST_SET_PERCENT;
@@ -101,7 +101,7 @@ void data_handler::split_data()
     printf("Validation Data Size: %lu.\n", validation_data->size());
 }
 
-void data_handler::count_classes()
+void ETL::count_classes()
 {
     int count = 0;
     for(unsigned i = 0; i < data_array->size(); i++) {
@@ -115,47 +115,47 @@ void data_handler::count_classes()
     printf("Successfully Extraced %d Unique Classes.\n", class_counts);
 }
 
-int data_handler::get_class_counts()
+int ETL::get_class_counts()
 {
     return class_counts;
 }
 
-int data_handler::get_data_array_size()
+int ETL::get_data_array_size()
 {
     return data_array->size();
 }
 
-int data_handler::get_training_data_size()
+int ETL::get_training_data_size()
 {
     return training_data->size();
 }
 
-int data_handler::get_test_data_size()
+int ETL::get_test_data_size()
 {
     return test_data->size();
 }
 
-int data_handler::get_validation_size()
+int ETL::get_validation_size()
 {
     return validation_data->size();
 }
 
-uint32_t data_handler::fix_endianness(const unsigned char *bytes)
+uint32_t ETL::fix_endianness(const unsigned char *bytes)
 {
     return (uint32_t)((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]));
 }
 
-std::vector<data *> *data_handler::get_training_data()
+std::vector<Data *> *ETL::get_training_data()
 {
     return training_data;
 }
 
-std::vector<data *> *data_handler::get_test_data()
+std::vector<Data *> *ETL::get_test_data()
 {
     return test_data;
 }
 
-std::vector<data *> *data_handler::get_validation_data()
+std::vector<Data *> *ETL::get_validation_data()
 {
     return validation_data;
 }
