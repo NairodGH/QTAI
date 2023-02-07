@@ -5,11 +5,11 @@
 class Sets
 {
     protected:
-        std::vector<Data *> *training_data;
-        std::vector<Data *> *test_data;
-        std::vector<Data *> *validation_data;
+        std::vector<Data *> *trainingData;
+        std::vector<Data *> *testData;
+        std::vector<Data *> *validationData;
     public:
-        void set_training_data(std::vector<Data *> *vect);
-        void set_test_data(std::vector<Data *> *vect);
-        void set_validation_data(std::vector<Data *> *vect);
+        void setTrainingData(std::vector<Data *> *vect);
+        void setTestData(std::vector<Data *> *vect);
+        void setValidationData(std::vector<Data *> *vect);
 };

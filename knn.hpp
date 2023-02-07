@@ -16,10 +16,10 @@ class KNN : public Sets
         KNN();
         ~KNN();
 
-        void find_knearest(Data *query_point);
-        void set_k(int val);
-        int find_most_frequent_class();
-        double calculate_distance(Data* query_point, Data* input);
-        double validate_perforamnce();
-        double test_performance();
+        void findKnearest(Data *queryPoint);
+        void setK(int val);
+        int findMostFrequentClass();
+        double distance(Data* queryPoint, Data* input);
+        double validate();
+        double test();
 };

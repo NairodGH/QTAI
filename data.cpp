@@ -1,59 +1,51 @@
 #include "Data.hpp"
 
-void Data::set_distance(double dist)
+void Data::setDistance(double dist)
 {
-    m_distance = dist;
+    distance = dist;
 }
 
-void Data::set_feature_vector(std::vector<uint8_t> *vect)
+void Data::setFeatureVector(std::vector<uint8_t> *vect)
 {
-    m_feature_vector = vect;
+    featureVector = vect;
 }
 
-void Data::append_to_feature_vector(uint8_t val)
+void Data::appendToFeatureVector(uint8_t val)
 {
-    m_feature_vector->push_back(val);
+    featureVector->push_back(val);
 }
 
-void Data::set_label(uint8_t val)
+void Data::setLabel(uint8_t val)
 {
-    m_label = val;
+    label = val;
 }
 
-void Data::set_enumerated_label(uint8_t val)
+void Data::setEnumeratedLabel(uint8_t val)
 {
-    m_enumerated_label = val;
+    enumeratedLabel = val;
 }
 
-void Data::print_vector()
+double Data::getDistance()
 {
-    printf("[ ");
-    for(uint8_t val : *m_feature_vector)
-        printf("%u ", val);
-    printf("]\n");
+    return distance;
 }
 
-double Data::get_distance()
+int Data::getFeatureVectorSize()
 {
-    return m_distance;
+    return featureVector->size();
 }
 
-int Data::get_feature_vector_size()
+uint8_t Data::getLabel()
 {
-    return m_feature_vector->size();
+    return label;
 }
 
-uint8_t Data::get_label()
+uint8_t Data::getEnumeratedLabel()
 {
-    return m_label;
+    return enumeratedLabel;
 }
 
-uint8_t Data::get_enumerated_label()
+std::vector<uint8_t> *Data::getFeatureVector()
 {
-    return m_enumerated_label;
-}
-
-std::vector<uint8_t> *Data::get_feature_vector()
-{
-    return m_feature_vector;
+    return featureVector;
 }

@@ -2,119 +2,119 @@
 
 Kmeans::Kmeans(int k)
 {
-    num_clusters = k;
+    numClusters = k;
     clusters = new std::vector<cluster_t *>;
-    used_indexes = new std::unordered_set<int>;
+    usedIndexes = new std::unordered_set<int>;
 }
 
-void Kmeans::init_clusters()
+void Kmeans::initClusters()
 {
-    for(int i = 0, index = 0; i < num_clusters; i++) {
-        while(used_indexes->find(index) != used_indexes->end())
+    for(int i = 0, index = 0; i < numClusters; i++) {
+        while(usedIndexes->find(index) != usedIndexes->end())
             index++;
-        clusters->push_back(new cluster_t(training_data->at(index)));
-        used_indexes->insert(index);
+        clusters->push_back(new cluster_t(trainingData->at(index)));
+        usedIndexes->insert(index);
     }
 }
 
-void Kmeans::init_clusters_for_each_class()
+void Kmeans::initClustersForEachClass()
 {
     std::unordered_set<int> classes_used;
 
-    for(int i = 0; i < training_data->size(); i++) {
-        if(classes_used.find(training_data->at(i)->get_label()) == classes_used.end()) {
-            clusters->push_back(new cluster_t(training_data->at(i)));
-            classes_used.insert(training_data->at(i)->get_label());
-            used_indexes->insert(i);
+    for(int i = 0; i < trainingData->size(); i++) {
+        if(classes_used.find(trainingData->at(i)->getLabel()) == classes_used.end()) {
+            clusters->push_back(new cluster_t(trainingData->at(i)));
+            classes_used.insert(trainingData->at(i)->getLabel());
+            usedIndexes->insert(i);
         }
     }
 }
 
 void Kmeans::train()
 {
-    for (int index = 0; used_indexes->size() < training_data->size(); ) {
-        while(used_indexes->find(index) != used_indexes->end())
+    for (int index = 0; usedIndexes->size() < trainingData->size(); ) {
+        while(usedIndexes->find(index) != usedIndexes->end())
             index++;
-        double min_dist = std::numeric_limits<double>::max();
-        int best_cluster = 0;
+        double minDist = std::numeric_limits<double>::max();
+        int bestCluster = 0;
         for(int j = 0; j < clusters->size(); j++) {
-            double dist = euclidean_distance(clusters->at(j)->centroid, training_data->at(index));
-            if(dist < min_dist) {
-                min_dist = dist;
-                best_cluster = j;
+            double dist = distance(clusters->at(j)->centroid, trainingData->at(index));
+            if(dist < minDist) {
+                minDist = dist;
+                bestCluster = j;
             }
         }
-        clusters->at(best_cluster)->add_to_cluster(training_data->at(index));
-        used_indexes->insert(index);
+        clusters->at(bestCluster)->add_to_cluster(trainingData->at(index));
+        usedIndexes->insert(index);
     }
 }
 
-double Kmeans::euclidean_distance(std::vector<double> *centroid, Data *query_point)
+double Kmeans::distance(std::vector<double> *centroid, Data *queryPoint)
 {
     double dist = 0.0;
 
     for(int i = 0; i < centroid->size(); i++)
-        dist += pow(centroid->at(i) - query_point->get_feature_vector()->at(i), 2);
+        dist += pow(centroid->at(i) - queryPoint->getFeatureVector()->at(i), 2);
     return sqrt(dist);
 }
 
 double Kmeans::validate()
 {
-    double num_correct = 0.0;
+    double numCorrect = 0.0;
 
-    for(auto query_point : *validation_data) {
-        double min_dist = std::numeric_limits<double>::max();
+    for(auto queryPoint : *validationData) {
+        double minDist = std::numeric_limits<double>::max();
         int best = 0;
         for(int i = 0; i < clusters->size(); i++) {
-            double current_dist = euclidean_distance(clusters->at(i)->centroid, query_point);
-            if(current_dist < min_dist) {
-                min_dist = current_dist;
+            double currentDist = distance(clusters->at(i)->centroid, queryPoint);
+            if(currentDist < minDist) {
+                minDist = currentDist;
                 best = i;
             }
         }
-        if(clusters->at(best)->most_frequent_class == query_point->get_label())
-            num_correct++;
+        if(clusters->at(best)->mostFrequentClass == queryPoint->getLabel())
+            numCorrect++;
     }
-    return 100.0 * (num_correct / (double) validation_data->size());
+    return 100.0 * (numCorrect / (double) validationData->size());
 }
 
 double Kmeans::test()
 {
-    double num_correct = 0.0;
+    double numCorrect = 0.0;
 
-    for(auto query_point : *test_data) {
-        double min_dist = std::numeric_limits<double>::max();
+    for(auto queryPoint : *testData) {
+        double minDist = std::numeric_limits<double>::max();
         int best = 0;
         for(int i = 0; i < clusters->size(); i++) {
-            double current_dist = euclidean_distance(clusters->at(i)->centroid, query_point);
-            if(current_dist < min_dist) {
-                min_dist = current_dist;
+            double currentDist = distance(clusters->at(i)->centroid, queryPoint);
+            if(currentDist < minDist) {
+                minDist = currentDist;
                 best = i;
             }
         }
-        if(clusters->at(best)->most_frequent_class == query_point->get_label()) num_correct++;
+        if(clusters->at(best)->mostFrequentClass == queryPoint->getLabel()) numCorrect++;
     }
-    return 100.0 * (num_correct / (double) test_data->size());
+    return 100.0 * (numCorrect / (double) testData->size());
 }
 
 //int
 //main()
 //{
 //    ETL *dh = new ETL();
-//    dh->read_input_data("../train-images-idx3-ubyte");
-//    dh->read_label_data("../train-labels-idx1-ubyte");
-//    dh->count_classes();
-//    dh->split_data();
+//    dh->readInputData("../train-images-idx3-ubyte");
+//    dh->readLabelData("../train-labels-idx1-ubyte");
+//    dh->countClasses();
+//    dh->splitData();
 //    double performance = 0;
 //    double best_performance = 0;
 //    int best_k = 1;
-//    for(int k = dh->get_class_counts(); k < dh->get_training_data()->size()*0.1; k++)
+//    for(int k = dh->getClassCounts(); k < dh->getTrainingData()->size()*0.1; k++)
 //    {
 //        Kmeans *km = new Kmeans(k);
-//        km->set_training_data(dh->get_training_data());
-//        km->set_test_data(dh->get_test_data());
-//        km->set_validation_data(dh->get_validation_data());
-//        km->init_clusters();
+//        km->setTrainingData(dh->getTrainingData());
+//        km->setTestData(dh->getTestData());
+//        km->setValidationData(dh->getValidationData());
+//        km->initClusters();
 //        km->train();
 //        performance = km->validate();
 //        printf("Current Perforamnce @ K = %d: %.2f\n", k, performance);
@@ -125,10 +125,10 @@ double Kmeans::test()
 //        }
 //    }
 //    Kmeans *km = new Kmeans(best_k);
-//    km->set_training_data(dh->get_training_data());
-//    km->set_test_data(dh->get_test_data());
-//    km->set_validation_data(dh->get_validation_data());
-//    km->init_clusters();
+//    km->setTrainingData(dh->getTrainingData());
+//    km->setTestData(dh->getTestData());
+//    km->setValidationData(dh->getValidationData());
+//    km->initClusters();
 //    km->train();
 //    printf("Overall Performance: %.2f\n",km->test());
 //

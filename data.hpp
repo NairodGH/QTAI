@@ -4,24 +4,23 @@
 
 class Data
 {
-    std::vector<uint8_t> *m_feature_vector;
-    uint8_t m_label;
-    uint8_t m_enumerated_label; // A -> 1
-    double m_distance;
+    std::vector<uint8_t> *featureVector;
+    uint8_t label;
+    uint8_t enumeratedLabel; // A -> 1
+    double distance;
 
 public:
-    void set_distance(double);
-    void set_feature_vector(std::vector<uint8_t> *);
-    void append_to_feature_vector(uint8_t);
-    void set_label(uint8_t);
-    void set_enumerated_label(uint8_t);
-    void print_vector();
+    void setDistance(double);
+    void setFeatureVector(std::vector<uint8_t> *);
+    void appendToFeatureVector(uint8_t);
+    void setLabel(uint8_t);
+    void setEnumeratedLabel(uint8_t);
 
-    double get_distance();
-    int get_feature_vector_size();
-    uint8_t get_label();
-    uint8_t get_enumerated_label();
+    double getDistance();
+    int getFeatureVectorSize();
+    uint8_t getLabel();
+    uint8_t getEnumeratedLabel();
 
-    std::vector<uint8_t> *get_feature_vector();
+    std::vector<uint8_t> *getFeatureVector();
 
 };

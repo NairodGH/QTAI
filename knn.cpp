@@ -21,61 +21,61 @@ KNN::~KNN()
     // NOTHING TO DO 
 }
 
-void KNN::find_knearest(Data *query_point)
+void KNN::findKnearest(Data *queryPoint)
 {
     neighbors = new std::vector<Data *>;
     double min = std::numeric_limits<double>::max();
-    double previous_min = min;
+    double previousMin = min;
     
     for(int i = 0, index; i < k; i++) {
         if(i == 0) {
-            for(int j = 0; j < training_data->size(); j++) {
-                double dist = calculate_distance(query_point, training_data->at(j));
-                training_data->at(j)->set_distance(dist);
+            for(int j = 0; j < trainingData->size(); j++) {
+                double dist = distance(queryPoint, trainingData->at(j));
+                trainingData->at(j)->setDistance(dist);
                 if(dist < min) {
                     min = dist;
                     index = j;
                 }
             }
-            neighbors->push_back(training_data->at(index));
-            previous_min = min;
+            neighbors->push_back(trainingData->at(index));
+            previousMin = min;
             min = std::numeric_limits<double>::max();
         } else {
-            for(int j = 0; j < training_data->size(); j++) {
-                double dist = training_data->at(j)->get_distance();
-                if(dist > previous_min && dist < min) {
+            for(int j = 0; j < trainingData->size(); j++) {
+                double dist = trainingData->at(j)->getDistance();
+                if(dist > previousMin && dist < min) {
                     min = dist;
                     index = j;
                 }
             }
-            neighbors->push_back(training_data->at(index));
-            previous_min = min;
+            neighbors->push_back(trainingData->at(index));
+            previousMin = min;
             min = std::numeric_limits<double>::max();
         }
     }
 }
 
-void KNN::set_k(int val)
+void KNN::setK(int val)
 {
     k = val;
 }
 
-int KNN::find_most_frequent_class()
+int KNN::findMostFrequentClass()
 {
-    std::map<uint8_t, int> freq_map;
+    std::map<uint8_t, int> freqMap;
 
     for(int i = 0; i < neighbors->size(); i++)
     {
-        if(freq_map.find(neighbors->at(i)->get_label()) == freq_map.end())
-            freq_map[neighbors->at(i)->get_label()] = 1;
+        if(freqMap.find(neighbors->at(i)->getLabel()) == freqMap.end())
+            freqMap[neighbors->at(i)->getLabel()] = 1;
         else 
-            freq_map[neighbors->at(i)->get_label()]++;
+            freqMap[neighbors->at(i)->getLabel()]++;
     }
 
     int best = 0;
     int max = 0;
 
-    for(auto kv : freq_map) {
+    for(auto kv : freqMap) {
         if(kv.second > max) {
             max = kv.second;
             best = kv.first;
@@ -86,65 +86,65 @@ int KNN::find_most_frequent_class()
 
 }
 
-double KNN::calculate_distance(Data* query_point, Data* input)
+double KNN::distance(Data* queryPoint, Data* input)
 {
     double value = 0;
 
-    if(query_point->get_feature_vector_size() != input->get_feature_vector_size()) {
+    if(queryPoint->getFeatureVectorSize() != input->getFeatureVectorSize()) {
         printf("Vector size mismatch.\n");
         exit(1);
     }
-    for(unsigned i = 0; i < query_point->get_feature_vector_size(); i++)
-        value += pow(query_point->get_feature_vector()->at(i) - input->get_feature_vector()->at(i),2);
+    for(unsigned i = 0; i < queryPoint->getFeatureVectorSize(); i++)
+        value += pow(queryPoint->getFeatureVector()->at(i) - input->getFeatureVector()->at(i),2);
     return sqrt(value);
 }
 
-double KNN::validate_perforamnce()
+double KNN::validate()
 {
-    double current_performance = 0;
+    double currentPerformance = 0;
     int count = 0;
-    int data_index = 0;
+    int dataIndex = 0;
 
-    for(Data *query_point : *validation_data) {
-        find_knearest(query_point);
-        int prediction = find_most_frequent_class();
-        data_index++;
-        if(prediction == query_point->get_label())
+    for(Data *queryPoint : *validationData) {
+        findKnearest(queryPoint);
+        int prediction = findMostFrequentClass();
+        dataIndex++;
+        if(prediction == queryPoint->getLabel())
             count++;
-        printf("Current Performance: %.3f %%\n", ((double)count)*100.0 / ((double)data_index));
+        printf("Current Performance: %.3f %%\n", ((double)count)*100.0 / ((double)dataIndex));
     }
-    current_performance = ((double)count)*100.0/((double)validation_data->size());
-    printf("Validation Performance for K = %d: %.3f\n", k, current_performance);
-    return current_performance;
+    currentPerformance = ((double)count)*100.0/((double)validationData->size());
+    printf("Validation Performance for K = %d: %.3f\n", k, currentPerformance);
+    return currentPerformance;
 }
-double KNN::test_performance()
+double KNN::test()
 {
-    double current_performance = 0;
+    double currentPerformance = 0;
     int count = 0;
-    for(Data *query_point : *test_data) {
-        find_knearest(query_point);
-        int prediction = find_most_frequent_class();
-        if(prediction == query_point->get_label())
+    for(Data *queryPoint : *testData) {
+        findKnearest(queryPoint);
+        int prediction = findMostFrequentClass();
+        if(prediction == queryPoint->getLabel())
             count++;
     }
-    current_performance = ((double)count)*100.0/((double)test_data->size());
-    printf("Validation Performance for K = %d: %.3f\n", k, current_performance);
-    return current_performance;
+    currentPerformance = ((double)count)*100.0/((double)testData->size());
+    printf("Validation Performance for K = %d: %.3f\n", k, currentPerformance);
+    return currentPerformance;
 }
 
 //int
 //main()
 //{
 //    ETL *dh = new ETL();
-//    dh->read_input_data("../train-images-idx3-ubyte");
-//    dh->read_label_data("../train-labels-idx1-ubyte");
-//    dh->count_classes();
-//    dh->split_data();
+//    dh->readInputData("../train-images-idx3-ubyte");
+//    dh->readLabelData("../train-labels-idx1-ubyte");
+//    dh->countClasses();
+//    dh->splitData();
 //    KNN *nearest = new KNN();
-//    nearest->set_k(1);
-//    nearest->set_training_data(dh->get_training_data());
-//    nearest->set_test_data(dh->get_test_data());
-//    nearest->set_validation_data(dh->get_validation_data());
+//    nearest->setK(1);
+//    nearest->setTrainingData(dh->getTrainingData());
+//    nearest->setTestData(dh->getTestData());
+//    nearest->setValidationData(dh->getValidationData());
 //    double performance = 0;
 //    double best_performance = 0;
 //    int best_k = 1;
@@ -152,12 +152,12 @@ double KNN::test_performance()
 //    {
 //        if(k == 1)
 //        {
-//            performance = nearest->validate_perforamnce();
+//            performance = nearest->validate();
 //            best_performance = performance;
 //        } else 
 //        {
-//            nearest->set_k(k);
-//            performance = nearest->validate_perforamnce();
+//            nearest->setK(k);
+//            performance = nearest->validate();
 //            if(performance > best_performance)
 //            {
 //                best_performance = performance;
@@ -165,6 +165,6 @@ double KNN::test_performance()
 //            }
 //        }
 //    }
-//    nearest->set_k(best_k);
-//    nearest->test_performance();
+//    nearest->setK(best_k);
+//    nearest->test();
 //}
