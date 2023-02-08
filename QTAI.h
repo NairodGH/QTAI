@@ -16,7 +16,8 @@ public:
 
 private:
     Ui::QTAIClass ui;
-    QLabel* label;
+    QLabel* labels;
+    QLabel* data;
     ETL *etl;
 
 protected:

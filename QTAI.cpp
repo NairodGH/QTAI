@@ -6,32 +6,38 @@ QTAI::QTAI(QWidget *parent) : QMainWindow(parent)
     ui.setupUi(this);
 
     setAcceptDrops(true);
-    label = new QLabel("Drop files here", this);
-    label->setGeometry(QRect(QPoint(width() / 2 - width() / 3, 0), QSize(width() / 3, width() / 3)));
-    label->setAlignment(Qt::AlignCenter);
-    label->setWordWrap(true);
+    labels = new QLabel("Waiting for the labels file (only for KNN)", this);
+    labels->setGeometry(QRect(QPoint(width() / 2 - width() / 3 / 2, 0), QSize(width() / 3, width() / 3)));
+    labels->setAlignment(Qt::AlignCenter);
+    labels->setWordWrap(true);
+    data = new QLabel("Waiting for the data file", this);
+    data->setGeometry(QRect(QPoint(width() / 2 - width() / 3 / 2, width() / 3), QSize(width() / 3, width() / 3)));
+    data->setAlignment(Qt::AlignCenter);
+    data->setWordWrap(true);
 }
 
 QTAI::~QTAI()
 {
 }
 
-void QTAI::dragEnterEvent(QDragEnterEvent* e) {
-    if (e->mimeData()->hasUrls()) {
-        e->accept();
+void QTAI::dragEnterEvent(QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasUrls()) {
+        event->accept();
     } else {
-        e->ignore();
+        event->ignore();
     }
 }
 
-void QTAI::dropEvent(QDropEvent* e) {
-    for (const QUrl& url : e->mimeData()->urls()) {
-        std::ifstream file(url.toLocalFile().toStdString());
-        if (file.is_open()) {
-            label->setText(QString::fromStdString("Data file:\n" + url.toLocalFile().toStdString()));
-        }
-        else {
+void QTAI::dropEvent(QDropEvent* event)
+{
+    type file;
 
-        }
+    for (const QUrl& url : event->mimeData()->urls()) {
+        file = etl->getFileType(url.toLocalFile().toStdString());
+        if (file == LABELS)
+            labels->setText(QString::fromStdString("Labels file:\n" + url.toLocalFile().toStdString()));
+        else if (file == DATA)
+            data->setText(QString::fromStdString("Data file:\n" + url.toLocalFile().toStdString()));
     }
 }

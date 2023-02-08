@@ -2,6 +2,12 @@
 
 #include "Data.hpp"
 
+enum type {
+    INVALID,
+    DATA,
+    LABELS
+};
+
 class ETL
 {
     private:
@@ -37,4 +43,6 @@ class ETL
         std::vector<Data *> * getTrainingData();
         std::vector<Data *> * getTestData();
         std::vector<Data *> * getValidationData();
+
+        type getFileType(std::string path);
 };

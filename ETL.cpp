@@ -158,3 +158,24 @@ std::vector<Data *> *ETL::getValidationData()
 {
     return validationData;
 }
+
+type ETL::getFileType(std::string path)
+{
+    FILE *file = fopen(path.c_str(), "rb");
+    unsigned char bytes[4];
+    uint32_t header;
+
+    if (file) {
+        if (fread(bytes, sizeof(bytes), 1, file))
+            header = fixEndianness(bytes);
+        else
+            return INVALID;
+        if (header == 2049)
+            return LABELS;
+        else if (header == 2051)
+            return DATA;
+        else
+            return INVALID;
+    } else
+        return INVALID;
+}
