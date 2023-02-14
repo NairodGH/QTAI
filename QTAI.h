@@ -19,6 +19,8 @@ private:
     QLabel* labels;
     QLabel* data;
     ETL *etl;
+    void startKNN();
+    void startKmeans();
 
 protected:
     void dragEnterEvent(QDragEnterEvent* e) override;

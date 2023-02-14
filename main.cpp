@@ -12,16 +12,15 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     QTAI qtai;
-    /*ETL *dh = new ETL();
 
     #ifdef DEBUG
         if(AttachConsole(ATTACH_PARENT_PROCESS) || AllocConsole())
             freopen("CONOUT$", "w", stdout);
     #endif
-    dh->readInputData("train-images-idx3-ubyte");
-    dh->readLabelData("train-labels-idx1-ubyte");
-    dh->countClasses();
-    dh->splitData();
+    
+    ETL *dh = new ETL();
+    dh->getFileType("train-images-idx3-ubyte");
+    dh->getFileType("train-labels-idx1-ubyte");
     KNN *nearest = new KNN();
     nearest->setK(1);
     nearest->setTrainingData(dh->getTrainingData());
@@ -45,7 +44,7 @@ int main(int argc, char *argv[])
         }
     }
     nearest->setK(best_k);
-    nearest->test();*/
+    nearest->test();
 
     /*double performance = 0;
     double best_performance = 0;

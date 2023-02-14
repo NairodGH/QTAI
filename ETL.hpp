@@ -27,8 +27,8 @@ class ETL
         ETL();
         ~ETL();
 
-        void readInputData(std::string path);
-        void readLabelData(std::string path);
+        void readData(FILE *f);
+        void readLabels(FILE *f);
         void splitData();
         void countClasses();
 

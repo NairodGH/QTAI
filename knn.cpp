@@ -117,6 +117,7 @@ double KNN::validate()
     printf("Validation Performance for K = %d: %.3f\n", k, currentPerformance);
     return currentPerformance;
 }
+
 double KNN::test()
 {
     double currentPerformance = 0;
