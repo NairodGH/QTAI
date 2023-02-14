@@ -18,33 +18,33 @@ int main(int argc, char *argv[])
             freopen("CONOUT$", "w", stdout);
     #endif
     
-    ETL *dh = new ETL();
-    dh->getFileType("train-images-idx3-ubyte");
-    dh->getFileType("train-labels-idx1-ubyte");
-    KNN *nearest = new KNN();
-    nearest->setK(1);
-    nearest->setTrainingData(dh->getTrainingData());
-    nearest->setTestData(dh->getTestData());
-    nearest->setValidationData(dh->getValidationData());
-    double performance = 0;
-    double best_performance = 0;
-    int best_k = 1;
-    for(int k = 1; k <= 3; k++)
-    {
-        if(k == 1) {
-            performance = nearest->validate();
-            best_performance = performance;
-        } else {
-            nearest->setK(k);
-            performance = nearest->validate();
-            if(performance > best_performance) {
-                best_performance = performance;
-                best_k = k;
-            }
-        }
-    }
-    nearest->setK(best_k);
-    nearest->test();
+    // ETL *dh = new ETL();
+    // dh->getFileType("train-images-idx3-ubyte");
+    // dh->getFileType("train-labels-idx1-ubyte");
+    // KNN *nearest = new KNN();
+    // nearest->setK(1);
+    // nearest->setTrainingData(dh->getTrainingData());
+    // nearest->setTestData(dh->getTestData());
+    // nearest->setValidationData(dh->getValidationData());
+    // double performance = 0;
+    // double best_performance = 0;
+    // int best_k = 1;
+    // for(int k = 1; k <= 3; k++)
+    // {
+    //     if(k == 1) {
+    //         performance = nearest->validate();
+    //         best_performance = performance;
+    //     } else {
+    //         nearest->setK(k);
+    //         performance = nearest->validate();
+    //         if(performance > best_performance) {
+    //             best_performance = performance;
+    //             best_k = k;
+    //         }
+    //     }
+    // }
+    // nearest->setK(best_k);
+    // nearest->test();
 
     /*double performance = 0;
     double best_performance = 0;

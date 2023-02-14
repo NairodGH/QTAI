@@ -64,6 +64,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="main.hpp" />
     <ClInclude Include="Sets.hpp" />
     <ClInclude Include="Data.hpp" />
     <ClInclude Include="ETL.hpp" />

@@ -145,14 +145,15 @@ type ETL::getFileType(std::string path)
         else
             return INVALID;
         if (header == 2049) {
-            if (!dataArray->empty())
+            if (!dataArray->empty()) {
                 readLabels(file);
+                countClasses();
+                splitData();
+            }
             return LABELS;
         }
         else if (header == 2051) {
             readData(file);
-            countClasses();
-            splitData();
             return DATA;
         }
         else
