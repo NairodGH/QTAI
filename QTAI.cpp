@@ -58,7 +58,8 @@ void QTAI::dropEvent(QDropEvent* event)
 
 void QTAI::startKNN()
 {
-    if (data->text()[0] == 'D' && labels->text()[0] == 'L') {
+    QTAI::startThread();
+    /*if (data->text()[0] == 'D' && labels->text()[0] == 'L') {
         KNN *knn = new KNN();
         knn->setK(1);
         knn->setTrainingData(etl->getTrainingData());
@@ -82,7 +83,7 @@ void QTAI::startKNN()
         }
         knn->setK(best_k);
         knn->test();
-    }
+    }*/
 }
 
 void QTAI::startKmeans()
