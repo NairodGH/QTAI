@@ -58,60 +58,17 @@ void QTAI::dropEvent(QDropEvent* event)
 
 void QTAI::startKNN()
 {
-    QTAI::startThread();
-    /*if (data->text()[0] == 'D' && labels->text()[0] == 'L') {
-        KNN *knn = new KNN();
-        knn->setK(1);
-        knn->setTrainingData(etl->getTrainingData());
-        knn->setTestData(etl->getTestData());
-        knn->setValidationData(etl->getValidationData());
-        double performance = 0;
-        double best_performance = 0;
-        int best_k = 1;
-        for(int k = 1; k <= 3; k++) {
-            if(k == 1) {
-                performance = knn->validate();
-                best_performance = performance;
-            } else {
-                knn->setK(k);
-                performance = knn->validate();
-                if(performance > best_performance) {
-                    best_performance = performance;
-                    best_k = k;
-                }
-            }
-        }
-        knn->setK(best_k);
-        knn->test();
-    }*/
+    if (data->text()[0] == 'D' && labels->text()[0] == 'L') {
+        KNNThread* thread = new KNNThread(etl);
+        QObject::connect(thread, &KNNThread::progress, this, &QTAI::handleProgress);
+        QObject::connect(thread, &KNNThread::finished, thread, &QTAI::deleteLater);
+        thread->start();
+    }
 }
 
 void QTAI::startKmeans()
 {
     if (data->text()[0] == 'D') {
-        double performance = 0;
-        double best_performance = 0;
-        int best_k = 1;
-        for(int k = 1; k < etl->getTrainingData()->size()*0.1; k++) {
-            Kmeans *km = new Kmeans(k);
-            km->setTrainingData(etl->getTrainingData());
-            km->setTestData(etl->getTestData());
-            km->setValidationData(etl->getValidationData());
-            km->initClusters();
-            km->train();
-            performance = km->validate();
-            printf("Current Perforamnce @ K = %d: %.2f\n", k, performance);
-            if(performance > best_performance) {
-                best_performance = performance;
-                best_k = k;
-            }
-        }
-        Kmeans *km = new Kmeans(best_k);
-        km->setTrainingData(etl->getTrainingData());
-        km->setTestData(etl->getTestData());
-        km->setValidationData(etl->getValidationData());
-        km->initClusters();
-        km->train();
-        printf("Overall Performance: %.2f\n",km->test());
+        
     }
 }
