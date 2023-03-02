@@ -69,7 +69,7 @@
     <ClInclude Include="Data.hpp" />
     <ClInclude Include="ETL.hpp" />
     <ClInclude Include="Kmeans.hpp" />
-    <ClInclude Include="KNN.hpp" />
+    <QtMoc Include="KNN.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -25,7 +25,6 @@ class ETL
         const double VALID_SET_PERCENT = 0.05;
 
         ETL();
-        ~ETL();
 
         void readData(FILE *f);
         void readLabels(FILE *f);

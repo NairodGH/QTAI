@@ -10,3 +10,11 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+
+typedef struct {
+    int k;
+    int actualNumber;
+    int guessedNumber;
+    std::vector<uint8_t>* image;
+    double performance;
+} knn_t;

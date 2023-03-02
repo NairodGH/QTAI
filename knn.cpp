@@ -1,19 +1,50 @@
 #include "KNN.hpp"
-#include <cmath>
-#include <limits>
-#include <map>
-#include "stdint.h"
-#include "ETL.hpp"
 
 
-KNN::KNN(int val)
+KNN::KNN(int k, ETL *etl)
 {
-    k = val;
+    this->k = k;
+    setTrainingData(etl->getTrainingData());
+    setTestData(etl->getTestData());
+    setValidationData(etl->getValidationData());
 }
 
-void KNN::setK(int val)
+void KNN::run()
 {
-    k = val;
+    int bestK = 1, tmpK = k;
+
+    for (double performance = 0, bestPerformance = 0; k <= tmpK + 2; k++) {
+        if (k == tmpK) {
+            performance = getPrecision(true);
+            bestPerformance = performance;
+        }
+        else {
+            performance = getPrecision(true);
+            if (performance > bestPerformance) {
+                bestPerformance = performance;
+                bestK = k;
+            }
+        }
+        std::cout << "Validation performance for k =  " << k << ": " << performance << std::endl;
+    }
+    k = bestK;
+    getPrecision(false);
+}
+
+double KNN::getPrecision(bool isValidation)
+{
+    int count = 0, dataIndex = 0;
+    std::vector<Data*>* set = isValidation ? validationData : testData;
+
+    for (Data* queryPoint : *set) {
+        findKnearest(queryPoint);
+        int prediction = findMostFrequentClass();
+        dataIndex++;
+        if (prediction == queryPoint->getLabel())
+            count++;
+        emit progress(knn_t{ k, queryPoint->getLabel(), prediction, queryPoint->getFeatureVector(), (double)count * 100. / (double)dataIndex });
+    }
+    return (double)count * 100. / (double)(set->size());
 }
 
 void KNN::findKnearest(Data *queryPoint)

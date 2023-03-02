@@ -8,10 +8,6 @@ ETL::ETL()
     validationData = new std::vector<Data *>;
 }
 
-ETL::~ETL()
-{
-}
-
 void ETL::readData(FILE *f)
 {
     uint32_t header[3];
