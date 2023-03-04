@@ -21,7 +21,6 @@ signals:
     void progress(knn_t infos);
 
 private:
-    ETL* etl;
     int k;
     std::vector<Data*>* neighbors;
 };

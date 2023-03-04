@@ -58,7 +58,7 @@
     <QtMoc Include="QTAI.h" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="ETL.cpp" />
-    <ClCompile Include="Kmeans.cpp" />
+    <ClCompile Include="KMC.cpp" />
     <ClCompile Include="KNN.cpp" />
     <ClCompile Include="QTAI.cpp" />
     <ClCompile Include="main.cpp" />
@@ -68,7 +68,7 @@
     <ClInclude Include="Sets.hpp" />
     <ClInclude Include="Data.hpp" />
     <ClInclude Include="ETL.hpp" />
-    <ClInclude Include="Kmeans.hpp" />
+    <QtMoc Include="KMC.hpp" />
     <QtMoc Include="KNN.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

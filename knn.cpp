@@ -25,7 +25,6 @@ void KNN::run()
                 bestK = k;
             }
         }
-        std::cout << "Validation performance for k =  " << k << ": " << performance << std::endl;
     }
     k = bestK;
     getPrecision(false);

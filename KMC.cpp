@@ -1,15 +1,36 @@
-#include "Kmeans.hpp"
+#include "KMC.hpp"
 
-Kmeans::Kmeans(int k)
+KMC::KMC(int k, ETL *etl)
 {
-    numClusters = k;
-    clusters = new std::vector<cluster_t *>;
-    usedIndexes = new std::unordered_set<int>;
+    this->k = k;
+    setTrainingData(etl->getTrainingData());
+    setTestData(etl->getTestData());
+    setValidationData(etl->getValidationData());
 }
 
-void Kmeans::initClusters()
+void KMC::run() {
+    double performance = 0, best_performance = 0;
+
+    for (int best_k = k; k < validationData->size() * 0.1; k++) {
+        clusters = new std::vector<cluster_t*>;
+        usedIndexes = new std::unordered_set<int>;
+        initClusters();
+        train();
+        performance = validate();
+        emit progress(kmc_t{ k, performance });
+        if (performance > best_performance) {
+            best_performance = performance;
+            best_k = k;
+        }
+        delete clusters;
+        delete usedIndexes;
+    }
+    train();
+}
+
+void KMC::initClusters()
 {
-    for(int i = 0, index = 0; i < numClusters; i++) {
+    for(int i = 0, index = 0; i < k; i++) {
         while(usedIndexes->find(index) != usedIndexes->end())
             index++;
         clusters->push_back(new cluster_t(trainingData->at(index)));
@@ -17,20 +38,7 @@ void Kmeans::initClusters()
     }
 }
 
-void Kmeans::initClustersForEachClass()
-{
-    std::unordered_set<int> classes_used;
-
-    for(int i = 0; i < trainingData->size(); i++) {
-        if(classes_used.find(trainingData->at(i)->getLabel()) == classes_used.end()) {
-            clusters->push_back(new cluster_t(trainingData->at(i)));
-            classes_used.insert(trainingData->at(i)->getLabel());
-            usedIndexes->insert(i);
-        }
-    }
-}
-
-void Kmeans::train()
+void KMC::train()
 {
     for (int index = 0; usedIndexes->size() < trainingData->size(); ) {
         while(usedIndexes->find(index) != usedIndexes->end())
@@ -49,7 +57,7 @@ void Kmeans::train()
     }
 }
 
-double Kmeans::distance(std::vector<double> *centroid, Data *queryPoint)
+double KMC::distance(std::vector<double> *centroid, Data *queryPoint)
 {
     double dist = 0.0;
 
@@ -58,7 +66,7 @@ double Kmeans::distance(std::vector<double> *centroid, Data *queryPoint)
     return sqrt(dist);
 }
 
-double Kmeans::validate()
+double KMC::validate()
 {
     double numCorrect = 0.0;
 
@@ -78,7 +86,7 @@ double Kmeans::validate()
     return 100.0 * (numCorrect / (double) validationData->size());
 }
 
-double Kmeans::test()
+double KMC::test()
 {
     double numCorrect = 0.0;
 
@@ -96,40 +104,3 @@ double Kmeans::test()
     }
     return 100.0 * (numCorrect / (double) testData->size());
 }
-
-//int
-//main()
-//{
-//    ETL *dh = new ETL();
-//    dh->readInputData("../train-images-idx3-ubyte");
-//    dh->readLabelData("../train-labels-idx1-ubyte");
-//    dh->countClasses();
-//    dh->splitData();
-//    double performance = 0;
-//    double best_performance = 0;
-//    int best_k = 1;
-//    for(int k = dh->getClassCounts(); k < dh->getTrainingData()->size()*0.1; k++)
-//    {
-//        Kmeans *km = new Kmeans(k);
-//        km->setTrainingData(dh->getTrainingData());
-//        km->setTestData(dh->getTestData());
-//        km->setValidationData(dh->getValidationData());
-//        km->initClusters();
-//        km->train();
-//        performance = km->validate();
-//        printf("Current Perforamnce @ K = %d: %.2f\n", k, performance);
-//        if(performance > best_performance)
-//        {
-//            best_performance = performance;
-//            best_k = k;
-//        }
-//    }
-//    Kmeans *km = new Kmeans(best_k);
-//    km->setTrainingData(dh->getTrainingData());
-//    km->setTestData(dh->getTestData());
-//    km->setValidationData(dh->getValidationData());
-//    km->initClusters();
-//    km->train();
-//    printf("Overall Performance: %.2f\n",km->test());
-//
-//}

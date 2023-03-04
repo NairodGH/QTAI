@@ -43,16 +43,21 @@ QTAI::QTAI(QWidget *parent) : QMainWindow(parent)
     knnInfos2->setAlignment(Qt::AlignCenter);
     knnInfos2->setWordWrap(true);
 
-    //Kmeans
-    QPushButton *rightButton = new QPushButton("KMeans", this);
+    //KMC
+    QPushButton *rightButton = new QPushButton("KMC", this);
     rightButton->setGeometry(QRect(QPoint(width() - width() / 3, 0), QSize(width() / 3, height() / 4)));
-    connect(rightButton, &QPushButton::clicked, this, &QTAI::startKmeans);
-    QLabel *kmeansCurentNumber = new QLabel(this);
-    kmeansCurentNumber->setGeometry(QRect(QPoint(width() - width() / 3, width() / 3), QSize(width() / 3, 2 * width() / 3)));
-}
-
-QTAI::~QTAI()
-{
+    connect(rightButton, &QPushButton::clicked, this, &QTAI::startKMC);
+    kmcInfos1 = new QLabel("K-Means Clustering (KMC) ", this);
+    kmcInfos1->setGeometry(QRect(QPoint(width() - width() / 3, height() / 4), QSize(width() / 3, height() / 4)));
+    kmcInfos1->setAlignment(Qt::AlignCenter);
+    kmcInfos1->setWordWrap(true);
+    kmcCurentNumber = new QLabel(this);
+    kmcCurentNumber->setGeometry(QRect(QPoint(width() - width() / 3, height() / 2), QSize(width() / 3, height() / 4)));
+    kmcCurentNumber->setAlignment(Qt::AlignCenter);
+    kmcInfos2 = new QLabel("", this);
+    kmcInfos2->setGeometry(QRect(QPoint(width() - width() / 3, height() - height() / 4), QSize(width() / 3, height() / 4)));
+    kmcInfos2->setAlignment(Qt::AlignCenter);
+    kmcInfos2->setWordWrap(true);
 }
 
 void QTAI::dragEnterEvent(QDragEnterEvent* event)
@@ -88,10 +93,13 @@ void QTAI::startKNN()
     }
 }
 
-void QTAI::startKmeans()
+void QTAI::startKMC()
 {
     if (data->text()[0] == 'D') {
-        
+        KMC* kmc = new KMC(1, etl);
+        QObject::connect(kmc, &KMC::progress, this, &QTAI::handleKMC);
+        QObject::connect(kmc, &KMC::finished, kmc, &QTAI::deleteLater);
+        kmc->start();
     }
 }
 
@@ -100,4 +108,9 @@ void QTAI::handleKNN(knn_t infos)
     knnInfos1->setText("Current number: " + QString::number(infos.actualNumber) + "\nGuessed number: " + QString::number(infos.guessedNumber));
     knnCurentNumber->setPixmap(QPixmap::fromImage(QImage(infos.image->data(), 28, 28, QImage::Format_Grayscale8).scaled(168, 168, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
     knnInfos2->setText("Current performance for k = " + QString::number(infos.k) + ": " + QString::number(infos.performance, 10, 0) + "%");
+}
+
+void QTAI::handleKMC(kmc_t infos)
+{
+    kmcInfos2->setText("Current performance for k = " + QString::number(infos.k) + ": " + QString::number(infos.performance, 10, 0) + "%");
 }

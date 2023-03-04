@@ -18,3 +18,8 @@ typedef struct {
     std::vector<uint8_t>* image;
     double performance;
 } knn_t;
+
+typedef struct {
+    int k;
+    double performance;
+} kmc_t;

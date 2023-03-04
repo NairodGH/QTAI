@@ -1,41 +1,7 @@
 #pragma once
 
 #include "KNN.hpp"
-#include "Kmeans.hpp"
-
-class KmeansThread : public QThread {
-    Q_OBJECT
-    void run() override {
-        /*double performance = 0;
-        double best_performance = 0;
-        int best_k = 1;
-        for (int k = 1; k < etl->getTrainingData()->size() * 0.1; k++) {
-            Kmeans* km = new Kmeans(k);
-            km->setTrainingData(etl->getTrainingData());
-            km->setTestData(etl->getTestData());
-            km->setValidationData(etl->getValidationData());
-            km->initClusters();
-            km->train();
-            performance = km->validate();
-            printf("Current Perforamnce @ K = %d: %.2f\n", k, performance);
-            if (performance > best_performance) {
-                best_performance = performance;
-                best_k = k;
-            }
-        }
-        Kmeans* km = new Kmeans(best_k);
-        km->setTrainingData(etl->getTrainingData());
-        km->setTestData(etl->getTestData());
-        km->setValidationData(etl->getValidationData());
-        km->initClusters();
-        km->train();
-        printf("Overall Performance: %.2f\n", km->test());
-        emit progressChanged(0);*/
-    }
-
-signals:
-    void progressChanged(int data);
-};
+#include "KMC.hpp"
 
 class QTAI : public QMainWindow
 {
@@ -43,7 +9,6 @@ class QTAI : public QMainWindow
 
 public:
     QTAI(QWidget *parent = nullptr);
-    ~QTAI();
 
 private:
     QLabel* data;
@@ -51,13 +16,19 @@ private:
     QLabel* labels;
     QLabel* labelsInfo;
 
+    ETL* etl;
+
+    void startKNN();
+    void handleKNN(knn_t infos);
     QLabel* knnInfos1;
     QLabel* knnCurentNumber;
     QLabel* knnInfos2;
-    ETL *etl;
-    void startKNN();
-    void startKmeans();
-    void handleKNN(knn_t infos);
+
+    void startKMC();
+    void handleKMC(kmc_t infos);
+    QLabel* kmcInfos1;
+    QLabel* kmcCurentNumber;
+    QLabel* kmcInfos2;
 
 protected:
     void dragEnterEvent(QDragEnterEvent* e) override;
