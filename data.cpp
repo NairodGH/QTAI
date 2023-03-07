@@ -1,5 +1,10 @@
 #include "Data.hpp"
 
+Data::Data()
+{
+    label = 10;
+}
+
 void Data::setDistance(double dist)
 {
     distance = dist;
@@ -28,11 +33,6 @@ void Data::setEnumeratedLabel(uint8_t val)
 double Data::getDistance()
 {
     return distance;
-}
-
-int Data::getFeatureVectorSize()
-{
-    return featureVector->size();
 }
 
 uint8_t Data::getLabel()

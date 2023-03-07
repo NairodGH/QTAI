@@ -41,7 +41,7 @@ double KNN::getPrecision(bool isValidation)
         dataIndex++;
         if (prediction == queryPoint->getLabel())
             count++;
-        emit progress(knn_t{ k, queryPoint->getLabel(), prediction, queryPoint->getFeatureVector(), (double)count * 100. / (double)dataIndex });
+        emit knnProgress(knn_t{ k, queryPoint->getLabel(), prediction, queryPoint->getFeatureVector(), (double)count * 100. / (double)dataIndex });
     }
     return (double)count * 100. / (double)(set->size());
 }
@@ -82,7 +82,7 @@ void KNN::findKnearest(Data *queryPoint)
 
 int KNN::findMostFrequentClass()
 {
-    std::map<uint8_t, int> freqMap;
+    std::map<int, int> freqMap;
 
     for(int i = 0; i < neighbors->size(); i++)
     {
@@ -110,7 +110,7 @@ double KNN::distance(Data* queryPoint, Data* input)
 {
     double value = 0;
 
-    for (unsigned i = 0; i < queryPoint->getFeatureVectorSize(); i++)
+    for (unsigned i = 0; i < queryPoint->getFeatureVector()->size(); i++)
         value += pow(queryPoint->getFeatureVector()->at(i) - input->getFeatureVector()->at(i), 2);
     return sqrt(value);
 }

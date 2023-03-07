@@ -10,6 +10,7 @@ class Data
     double distance;
 
 public:
+    Data();
     void setDistance(double);
     void setFeatureVector(std::vector<uint8_t> *);
     void appendToFeatureVector(uint8_t);
@@ -17,7 +18,6 @@ public:
     void setEnumeratedLabel(uint8_t);
 
     double getDistance();
-    int getFeatureVectorSize();
     uint8_t getLabel();
     uint8_t getEnumeratedLabel();
 

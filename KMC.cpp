@@ -12,12 +12,12 @@ void KMC::run() {
     double performance = 0, best_performance = 0;
 
     for (int best_k = k; k < validationData->size() * 0.1; k++) {
-        clusters = new std::vector<cluster_t*>;
+        clusters = new std::vector<Cluster*>;
         usedIndexes = new std::unordered_set<int>;
         initClusters();
         train();
         performance = validate();
-        emit progress(kmc_t{ k, performance });
+        emit kmcProgress(kmc_t{ k, performance });
         if (performance > best_performance) {
             best_performance = performance;
             best_k = k;
@@ -33,7 +33,7 @@ void KMC::initClusters()
     for(int i = 0, index = 0; i < k; i++) {
         while(usedIndexes->find(index) != usedIndexes->end())
             index++;
-        clusters->push_back(new cluster_t(trainingData->at(index)));
+        clusters->push_back(new Cluster(trainingData->at(index)));
         usedIndexes->insert(index);
     }
 }
@@ -46,7 +46,7 @@ void KMC::train()
         double minDist = std::numeric_limits<double>::max();
         int bestCluster = 0;
         for(int j = 0; j < clusters->size(); j++) {
-            double dist = distance(clusters->at(j)->centroid, trainingData->at(index));
+            double dist = distance(clusters->at(j)->getCentroid(), trainingData->at(index));
             if(dist < minDist) {
                 minDist = dist;
                 bestCluster = j;
@@ -74,13 +74,13 @@ double KMC::validate()
         double minDist = std::numeric_limits<double>::max();
         int best = 0;
         for(int i = 0; i < clusters->size(); i++) {
-            double currentDist = distance(clusters->at(i)->centroid, queryPoint);
+            double currentDist = distance(clusters->at(i)->getCentroid(), queryPoint);
             if(currentDist < minDist) {
                 minDist = currentDist;
                 best = i;
             }
         }
-        if(clusters->at(best)->mostFrequentClass == queryPoint->getLabel())
+        if(clusters->at(best)->getMostFrequentClass() == queryPoint->getLabel())
             numCorrect++;
     }
     return 100.0 * (numCorrect / (double) validationData->size());
@@ -94,13 +94,13 @@ double KMC::test()
         double minDist = std::numeric_limits<double>::max();
         int best = 0;
         for(int i = 0; i < clusters->size(); i++) {
-            double currentDist = distance(clusters->at(i)->centroid, queryPoint);
+            double currentDist = distance(clusters->at(i)->getCentroid(), queryPoint);
             if(currentDist < minDist) {
                 minDist = currentDist;
                 best = i;
             }
         }
-        if(clusters->at(best)->mostFrequentClass == queryPoint->getLabel()) numCorrect++;
+        if(clusters->at(best)->getMostFrequentClass() == queryPoint->getLabel()) numCorrect++;
     }
     return 100.0 * (numCorrect / (double) testData->size());
 }

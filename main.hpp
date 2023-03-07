@@ -1,5 +1,4 @@
 #include <vector>
-#include "stdint.h" // uint8_t 
 #include "stdio.h"
 #include <string>
 #include <map>
@@ -10,6 +9,21 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
+
+typedef struct {
+    std::string path;
+    size_t size;
+    size_t height;
+    size_t width;
+} data_t;
+
+typedef struct {
+    std::string path;
+    int classCounts;
+    size_t trainingSize;
+    size_t testSize;
+    size_t validationSize;
+} labels_t;
 
 typedef struct {
     int k;

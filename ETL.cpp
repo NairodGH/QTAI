@@ -8,6 +8,37 @@ ETL::ETL()
     validationData = new std::vector<Data *>;
 }
 
+void ETL::run() {
+    FILE* file = fopen(path.c_str(), "rb");
+    unsigned char bytes[4];
+    uint32_t header;
+
+    if (file) {
+        std::cout << path << " is accessible" << std::endl;
+        if (fread(bytes, sizeof(bytes), 1, file))
+            header = fixEndianness(bytes);
+        else
+            return;
+        std::cout << path << " could be read" << std::endl;
+        if (header == 2049 && !dataArray->empty()) {
+            std::cout << "labels start" << std::endl;
+            readLabels(file);
+            std::cout << "readLabels" << std::endl;
+            countClasses();
+            std::cout << "countClasses" << std::endl;
+            splitData();
+            std::cout << "splitData" << std::endl;
+            std::cout << "emit" << std::endl;
+        }
+        if (header == 2051) {
+            std::cout << "data start" << std::endl;
+            readData(file);
+            std::cout << "readData" << std::endl;
+            std::cout << "emit" << std::endl;
+        }
+    }
+}
+
 void ETL::readData(FILE *f)
 {
     uint32_t header[3];
@@ -16,8 +47,8 @@ void ETL::readData(FILE *f)
     for (size_t i = 0; i < 3; i++)
         if (fread(bytes, sizeof(bytes), 1, f))
             header[i] = fixEndianness(bytes);
-    printf("Done getting file header.\n");
     uint32_t imageSize = header[1] * header[2];
+    std::cout << header[0] << " " << header[1] << " " << header[2] << " " << std::endl;
     for(size_t i = 0; i < header[0]; i++) {
         Data *d = new Data();
         d->setFeatureVector(new std::vector<uint8_t>());
@@ -27,8 +58,7 @@ void ETL::readData(FILE *f)
                 d->appendToFeatureVector(element[0]);
         dataArray->push_back(d);
     }
-    featureVectorSize = dataArray->at(0)->getFeatureVector()->size();
-    printf("Successfully read %zu Data entries.\n", dataArray->size());
+    emit etlDataFinished(data_t{ path, header[0], header[1], header[2] });
 }
 
 void ETL::readLabels(FILE *f)
@@ -43,14 +73,13 @@ void ETL::readLabels(FILE *f)
         if(fread(element, sizeof(element), 1, f))
             dataArray->at(j)->setLabel(element[0]);
     }
-    printf("Done getting Label header.\n");
 }
 
 void ETL::splitData()
 {
-    int trainSize = dataArray->size() * TRAIN_SET_PERCENT;
-    int testSize = dataArray->size() * TEST_SET_PERCENT;
-    int validationSize = dataArray->size() * VALID_SET_PERCENT;
+    size_t trainSize = dataArray->size() * TRAIN_SET_PERCENT;
+    size_t testSize = dataArray->size() * TEST_SET_PERCENT;
+    size_t validationSize = dataArray->size() * VALID_SET_PERCENT;
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(dataArray->begin(), dataArray->end(), g);
@@ -65,9 +94,7 @@ void ETL::splitData()
     count = 0;
     for (; count < validationSize; count++)
         validationData->push_back(dataArray->at(index++));
-    printf("Training Data Size: %lu.\n", trainingData->size());
-    printf("Test Data Size: %lu.\n", testData->size());
-    printf("Validation Data Size: %lu.\n", validationData->size());
+    emit etlLabelsFinished(labels_t{ path, classCounts, trainSize, testSize, validationSize });
 }
 
 void ETL::countClasses()
@@ -81,32 +108,6 @@ void ETL::countClasses()
         }
     }
     classCounts = count;
-    printf("Successfully Extracted %d Unique Classes.\n", classCounts);
-}
-
-int ETL::getClassCounts()
-{
-    return classCounts;
-}
-
-int ETL::getDataArraySize()
-{
-    return dataArray->size();
-}
-
-int ETL::getTrainingDataSize()
-{
-    return trainingData->size();
-}
-
-int ETL::getTestDataSize()
-{
-    return testData->size();
-}
-
-int ETL::getValidationSize()
-{
-    return validationData->size();
 }
 
 uint32_t ETL::fixEndianness(const unsigned char *bytes)
@@ -114,46 +115,7 @@ uint32_t ETL::fixEndianness(const unsigned char *bytes)
     return (uint32_t)((bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]));
 }
 
-std::vector<Data *> *ETL::getTrainingData()
+void ETL::setPath(std::string path)
 {
-    return trainingData;
-}
-
-std::vector<Data *> *ETL::getTestData()
-{
-    return testData;
-}
-
-std::vector<Data *> *ETL::getValidationData()
-{
-    return validationData;
-}
-
-type ETL::getFileType(std::string path)
-{
-    FILE *file = fopen(path.c_str(), "rb");
-    unsigned char bytes[4];
-    uint32_t header;
-
-    if (file) {
-        if (fread(bytes, sizeof(bytes), 1, file))
-            header = fixEndianness(bytes);
-        else
-            return INVALID;
-        if (header == 2049) {
-            if (!dataArray->empty()) {
-                readLabels(file);
-                countClasses();
-                splitData();
-            }
-            return LABELS;
-        }
-        else if (header == 2051) {
-            readData(file);
-            return DATA;
-        }
-        else
-            return INVALID;
-    } else
-        return INVALID;
+    this->path = path;
 }

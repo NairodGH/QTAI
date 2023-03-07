@@ -52,6 +52,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Cluster.cpp" />
     <ClCompile Include="Sets.cpp" />
     <QtRcc Include="QTAI.qrc" />
     <QtUic Include="QTAI.ui" />
@@ -64,10 +65,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Cluster.hpp" />
     <ClInclude Include="main.hpp" />
     <ClInclude Include="Sets.hpp" />
     <ClInclude Include="Data.hpp" />
-    <ClInclude Include="ETL.hpp" />
+    <QtMoc Include="ETL.hpp" />
     <QtMoc Include="KMC.hpp" />
     <QtMoc Include="KNN.hpp" />
   </ItemGroup>

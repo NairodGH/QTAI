@@ -14,3 +14,18 @@ void Sets::setValidationData(std::vector<Data *> * vect)
 {
     validationData = vect;
 }
+
+std::vector<Data *> *Sets::getTrainingData()
+{
+    return trainingData;
+}
+
+std::vector<Data *> *Sets::getTestData()
+{
+    return testData;
+}
+
+std::vector<Data *> *Sets::getValidationData()
+{
+    return validationData;
+}

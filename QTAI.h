@@ -17,6 +17,8 @@ private:
     QLabel* labelsInfo;
 
     ETL* etl;
+    void handleData(data_t infos);
+    void handleLabels(labels_t infos);
 
     void startKNN();
     void handleKNN(knn_t infos);

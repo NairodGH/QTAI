@@ -18,7 +18,7 @@ public:
     double distance(Data* queryPoint, Data* input);
 
 signals:
-    void progress(knn_t infos);
+    void knnProgress(knn_t infos);
 
 private:
     int k;

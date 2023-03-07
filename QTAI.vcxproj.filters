@@ -55,6 +55,9 @@
     <ClCompile Include="Sets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Cluster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sets.hpp">
@@ -63,10 +66,10 @@
     <ClInclude Include="Data.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ETL.hpp">
+    <ClInclude Include="main.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="main.hpp">
+    <ClInclude Include="Cluster.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="KMC.hpp">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ETL.hpp">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
