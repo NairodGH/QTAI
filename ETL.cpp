@@ -14,28 +14,17 @@ void ETL::run() {
     uint32_t header;
 
     if (file) {
-        std::cout << path << " is accessible" << std::endl;
         if (fread(bytes, sizeof(bytes), 1, file))
             header = fixEndianness(bytes);
         else
             return;
-        std::cout << path << " could be read" << std::endl;
-        if (header == 2049 && !dataArray->empty()) {
-            std::cout << "labels start" << std::endl;
+        if (header == 2049 && !dataArray->empty() && dataArray->at(0)->getLabel() == 10) {
             readLabels(file);
-            std::cout << "readLabels" << std::endl;
             countClasses();
-            std::cout << "countClasses" << std::endl;
             splitData();
-            std::cout << "splitData" << std::endl;
-            std::cout << "emit" << std::endl;
         }
-        if (header == 2051) {
-            std::cout << "data start" << std::endl;
+        if (header == 2051 && dataArray->empty())
             readData(file);
-            std::cout << "readData" << std::endl;
-            std::cout << "emit" << std::endl;
-        }
     }
 }
 
@@ -48,7 +37,6 @@ void ETL::readData(FILE *f)
         if (fread(bytes, sizeof(bytes), 1, f))
             header[i] = fixEndianness(bytes);
     uint32_t imageSize = header[1] * header[2];
-    std::cout << header[0] << " " << header[1] << " " << header[2] << " " << std::endl;
     for(size_t i = 0; i < header[0]; i++) {
         Data *d = new Data();
         d->setFeatureVector(new std::vector<uint8_t>());
