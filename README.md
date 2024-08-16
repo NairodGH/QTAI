@@ -18,7 +18,6 @@
 
 ## 🔍 About
 
-Can also be found at https://github.com/NairodGH/QTAI.\
 QTAI is a personal C++ windows project I've started back in 2023 for school.\
 It is a [Qt](https://fr.wikipedia.org/wiki/Qt) application to visualize the prediction results of both [KNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) and [KMC](https://en.wikipedia.org/wiki/K-means_clustering) on the [MNIST](https://en.wikipedia.org/wiki/MNIST_database) database.\
 It features asynchronous usage of both algorithms once their common data and labels files are drag and dropped by displaying dataset infos, the current number's guess with visualization (KNN, for each number and each k so takes a while) and the current k accuracy (KMC).\
