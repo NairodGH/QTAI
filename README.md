@@ -1,12 +1,10 @@
 # <p align="center">📊 QTAI 🤖</p>
 
 <p align="center">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Qt_logo_neon_2022.svg/800px-Qt_logo_neon_2022.svg.png">
+    <img src="qtai.png">
 </p>
 
 ## 📋 Table of contents
-<details>
-<summary>Click to reveal</summary>
 
 - [About](#-about)
 - [Requirements](#-requirements)
@@ -14,13 +12,11 @@
 - [Usage](#-usage)
 - [Author](#-author)
 
-</details>
-
 ## 🔍 About
 
 QTAI is a personal C++ windows project I've started back in 2023 for school.\
 It is a [Qt](https://fr.wikipedia.org/wiki/Qt) application to visualize the prediction results of both [KNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) and [KMC](https://en.wikipedia.org/wiki/K-means_clustering) on the [MNIST](https://en.wikipedia.org/wiki/MNIST_database) database.\
-It features asynchronous usage of both algorithms once their common data and labels files are drag and dropped by displaying dataset infos, the current number's guess with visualization (KNN, for each number and each k so takes a while) and the current k accuracy (KMC).\
+It features asynchronous usage of both algorithms once their common data and labels files are drag and dropped by displaying dataset infos, the current number's guess with visualization (KNN, for each number and each k so takes a while) and the current k accuracy (KMC, it will naturally get better as k increases).\
 Having already worked with the Win32 API, I wanted to try Qt as a more modern UI library while exploring a new subject such as from-scratch machine learning.\
 Thanks to [Gerard TAYLOR](https://www.youtube.com/playlist?list=PL79n_WS-sPHKklEvOLiM1K94oJBsGnz71) for the tutorial.
 

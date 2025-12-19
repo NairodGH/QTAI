@@ -10,6 +10,7 @@ QTAI::QTAI(QWidget *parent) : QMainWindow(parent)
     //setup ui
     resize(1280, 720);
     setPalette(QPalette("#f0f0ff"));
+    QApplication::setStyle("Fusion");
 
     //drag & drop
     setAcceptDrops(true);
