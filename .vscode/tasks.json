@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: Debug",
+            "type": "cmake",
+            "command": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake Debug build",
+            "cmake": {
+                "configureOnOpen": false,
+                "buildDirectory": "${workspaceFolder}/build/Debug"
+            },
+            "options": {
+                "cmakeVariant": "Debug"
+            }
+        },
+        {
+            "label": "CMake: Release",
+            "type": "cmake",
+            "command": "build", 
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "CMake Release build (AVX2)",
+            "cmake": {
+                "buildDirectory": "${workspaceFolder}/build/Release"
+            },
+            "options": {
+                "cmakeVariant": "Release"
+            }
+        }
+    ]
+}

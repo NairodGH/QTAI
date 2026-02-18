@@ -1,39 +1,31 @@
 # <p align="center">📊 QTAI 🤖</p>
 
 <p align="center">
-    <img src="qtai.png">
+    <img src="knn.gif">
 </p>
-
-## 📋 Table of contents
-
-- [About](#-about)
-- [Requirements](#-requirements)
-- [Building](#-building)
-- [Usage](#-usage)
-- [Author](#-author)
 
 ## 🔍 About
 
 QTAI is a personal C++ windows project I've started back in 2023 for school.\
-It is a [Qt](https://fr.wikipedia.org/wiki/Qt) application to visualize the prediction results of both [KNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) and [KMC](https://en.wikipedia.org/wiki/K-means_clustering) on the [MNIST](https://en.wikipedia.org/wiki/MNIST_database) database.\
-It features asynchronous usage of both algorithms once their common data and labels files are drag and dropped by displaying dataset infos, the current number's guess with visualization (KNN, for each number and each k so takes a while) and the current k accuracy (KMC, it will naturally get better as k increases).\
-Having already worked with the Win32 API, I wanted to try Qt as a more modern UI library while exploring a new subject such as from-scratch machine learning.\
-Thanks to [Gerard TAYLOR](https://www.youtube.com/playlist?list=PL79n_WS-sPHKklEvOLiM1K94oJBsGnz71) for the tutorial.
+It is a [Qt](https://fr.wikipedia.org/wiki/Qt) application to visualize how [ML](https://en.wikipedia.org/wiki/Machine_learning) algorithms such as [KNN](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) and [KMC](https://en.wikipedia.org/wiki/K-means_clustering) on the [MNIST](https://en.wikipedia.org/wiki/MNIST_database) database (with [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load)).\
+Having already worked with the [Win32 API](https://github.com/NairodGH/Chaos), I wanted to try Qt, with both widgets and QML, as a more modern/popular UI library while exploring from-scratch machine learning.\
+The old (ugly) widgets only version can be found [here](https://github.com/NairodGH/QTAI/tree/ce7609ccc1f11c0c2fdb20603e694ac39224e7d1).
 
 ## 💻 Requirements
 
 You will need:
-- [Visual Studio](https://visualstudio.microsoft.com) 2022
-- [Qt](https://www.qt.io/download-qt-installer-oss)
+- [CMake 4.0+](https://cmake.org/download/)
+- [Qt 6.latest](https://www.qt.io/download-qt-installer-oss)
 
 ## 🔧 Building
 
-Configure Qt to be detected by Visual Studio, their [extension](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2022) helps.
-Launch the Visual Studio project from ```QTAI.vcxproj``` and start it using the top "Local Windows Debugger" button.
+I recommend opening the project in [Visual Studio Code](https://code.visualstudio.com/) with the [CMake tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extension installed.\
+It should detect and build the CMakeLists.txt automatically, then you can just use the bottom left ▶️ button to launch it.
 
 ## 🎮 Usage
 
-Drag and drop the data file ```train-images-idx3-ubyte``` first and then the labels file ```train-labels-idx1-ubyte``` to be able to start the algorithms with their respective buttons.
+Use the top left switch button to change between QtWidgets and QML UI, it shouldn't visually change much because its goal was mainly for me to discover both code-wise.\
+Use the top tabs to switch between ML algorithms, each then has its own set of QoL controls.
 
 ## 🤝 Author
 

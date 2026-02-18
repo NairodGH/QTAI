@@ -1,0 +1,30 @@
+{
+    "cmake.configureOnOpen": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.environment": {
+        "PATH": "C:/Qt/6.10.1/msvc2022_64/bin;${env:PATH}"
+    },
+    "cmake.configureSettings": {
+        "CMAKE_BUILD_TYPE": "${buildType}"
+    },
+    "cmake.debugConfig": {
+        "environment": [
+            {
+                "name": "PATH",
+                "value": "C:/Qt/6.10.1/msvc2022_64/bin;${env:PATH}"
+            }
+        ],
+        "cwd": "${workspaceFolder}/build/Debug"
+    },
+    "cmake.buildBeforeRun": true,
+    "C_Cpp.default.browse.path": ["${workspaceFolder}"],
+    "files.watcherExclude": {
+        "**/build/**": true,
+        "**/.git/**": true
+    },
+    "C_Cpp.files.exclude": {
+        "**/build/**": true,
+        "**/moc_*": true
+    },
+    "C_Cpp.default.compilerPath": "cl.exe"
+}
