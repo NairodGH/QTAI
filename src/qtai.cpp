@@ -17,15 +17,16 @@ QTAI::QTAI(QWidget* parent)
 
 QTAI::~QTAI()
 {
+    // no need for deletes since QThreads are childs of qtai so will get auto claned up
     for (auto& algorithm : algorithms) {
         if (algorithm) {
+            algorithm->forceWake(); // in case it was paused, would cause error
             algorithm->requestInterruption();
             algorithm->quit();
             if (!algorithm->wait(2000)) {
                 algorithm->terminate();
                 algorithm->wait();
             }
-            delete algorithm;
         }
     }
 
@@ -36,7 +37,6 @@ QTAI::~QTAI()
             etl->terminate();
             etl->wait();
         }
-        delete etl;
     }
 }
 
@@ -51,28 +51,26 @@ void QTAI::setCurrentIndex(int index)
 
 void QTAI::onLoadingComplete(DatasetInfo info)
 {
-    dataLoaded = true;
-    datasetInfo = info;
-
     for (int i = 0; i < algorithms.size(); ++i) {
         if (!algorithms[i]) {
-            statusLabels[i]->setText(
-                QString("Dataset Loaded Successfully\n\nTraining samples: %1\nValidation samples: %2\nTest samples: "
-                        "%3\nDimensions: %4x%5\nClasses: %6\n\nClick to start training %7")
-                    .arg(datasetInfo.trainCount)
-                    .arg(datasetInfo.valCount)
-                    .arg(datasetInfo.testCount)
-                    .arg(datasetInfo.imageWidth)
-                    .arg(datasetInfo.imageHeight)
-                    .arg(datasetInfo.classCount)
-                    .arg(names[i]));
+            loadingStatus
+                = QString("Dataset Loaded Successfully\n\nTraining samples: %1\nValidation samples: %2\nTest samples: "
+                          "%3\nDimensions: %4x%5\nClasses: %6\n\nClick to start training %7")
+                      .arg(info.trainCount)
+                      .arg(info.valCount)
+                      .arg(info.testCount)
+                      .arg(info.imageWidth)
+                      .arg(info.imageHeight)
+                      .arg(info.classCount);
+            statusLabels[i]->setText(loadingStatus.arg(names[i]));
         }
     }
+    emit loadingStatusChanged();
 }
 
 void QTAI::onContentClicked()
 {
-    if (!dataLoaded || currentIndex > 0)
+    if (etl->testData.empty() || currentIndex > 0)
         return;
 
     // delete clickable area, easier than bothering with widget stretching shenanigans
@@ -82,6 +80,7 @@ void QTAI::onContentClicked()
 
     if (currentIndex == 0) {
         algorithms[0] = new KNN(this);
+        emit algorithmsChanged();
         connect(static_cast<KNN*>(algorithms[0]), &KNN::restart, this, &QTAI::onRestart);
         algorithms[0]->start();
     }
@@ -94,6 +93,7 @@ void QTAI::createWidgets()
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
+    // top bar
     auto* topBar = new QWidget();
     topBar->setStyleSheet("background-color: #2d2d2d;");
     topBar->setFixedHeight(40);
@@ -126,6 +126,7 @@ void QTAI::createWidgets()
     }
     mainLayout->addWidget(topBar);
 
+    // content
     contentStack = new QStackedWidget();
     contentStack->setStyleSheet("background-color: #1e1e1e;");
 
@@ -167,7 +168,7 @@ void QTAI::createWidgets()
 
 bool QTAI::eventFilter(QObject* obj, QEvent* event)
 {
-    if (event->type() == QEvent::MouseButtonPress && dataLoaded) {
+    if (event->type() == QEvent::MouseButtonPress) {
         onContentClicked();
         return true;
     }
@@ -203,6 +204,7 @@ void QTAI::onRestart(QThread* algorithm)
         algorithm->wait();
     }
 
+    // clean all items from the widget since they'll get recreated
     QWidget* currentWidget = widgets[currentIndex];
     QLayout* layout = currentWidget->layout();
     if (layout) {
@@ -217,8 +219,11 @@ void QTAI::onRestart(QThread* algorithm)
 
     if (qobject_cast<KNN*>(algorithm)) {
         delete algorithm;
+        algorithms[0] = nullptr; // equivalent of above's ui clean but for qml with its "active" property on loader
+        emit algorithmsChanged();
         algorithms[0] = new KNN(this);
         connect(static_cast<KNN*>(algorithms[0]), &KNN::restart, this, &QTAI::onRestart);
+        emit algorithmsChanged();
         algorithms[0]->start();
     }
 }

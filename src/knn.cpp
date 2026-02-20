@@ -7,10 +7,8 @@
 #pragma region GUI Thread
 
 KNN::KNN(QObject* parent)
-    : QThread(parent)
+    : Algorithm(parent)
     , k(kValues[0])
-    , skip(false)
-    , paused(false)
     , visualizationWidget(nullptr)
     , statusLabel(nullptr)
     , kValueLabel(nullptr)
@@ -22,7 +20,7 @@ KNN::KNN(QObject* parent)
     , restartButton(nullptr)
     , resultsContainer(nullptr)
 {
-    QTAI *qtai = qobject_cast<QTAI*>(parent);
+    QTAI* qtai = qobject_cast<QTAI*>(parent);
     if (!qtai) {
         qDebug() << "Error: KNN parent is not QTAI!";
         return;
@@ -55,8 +53,8 @@ void KNN::setupKNNPage(QWidget* page)
 {
     QVBoxLayout* mainLayout = qobject_cast<QVBoxLayout*>(page->layout());
     visualizationWidget = new QWidget();
-    auto* vizLayout = new QVBoxLayout(visualizationWidget);
-    vizLayout->setContentsMargins(20, 20, 20, 20);
+    auto* visualizationLayout = new QVBoxLayout(visualizationWidget);
+    visualizationLayout->setContentsMargins(20, 20, 20, 20);
 
     // results grid
     auto* resultsContainer = new QWidget();
@@ -101,7 +99,7 @@ void KNN::setupKNNPage(QWidget* page)
     resultsContainerLayout->addLayout(resultsLayout);
     resultsContainer = resultsContainer;
     resultsContainer->update();
-    vizLayout->addWidget(resultsContainer);
+    visualizationLayout->addWidget(resultsContainer);
 
     // status and buttons
     auto* topBarLayout = new QHBoxLayout();
@@ -137,10 +135,10 @@ void KNN::setupKNNPage(QWidget* page)
                                  "border-radius: 3px; font-weight: bold; }"
                                  "QPushButton:hover { background-color: #505050; }");
     restartButton->setVisible(false);
-    connect(restartButton, &QPushButton::clicked, this, [this]() { emit restart(this); });
+    connect(restartButton, &QPushButton::clicked, this, &KNN::onRestart);
     topBarLayout->addWidget(restartButton);
 
-    vizLayout->addLayout(topBarLayout);
+    visualizationLayout->addLayout(topBarLayout);
 
     // main content
     auto* contentLayout = new QHBoxLayout();
@@ -155,7 +153,8 @@ void KNN::setupKNNPage(QWidget* page)
     leftLayout->setSpacing(10);
     leftLayout->setAlignment(Qt::AlignCenter);
 
-    kValueLabel = new QLabel(QString("Nearest %1 Neighbor%2:").arg(k).arg(k == 1 ? "" : "s"));
+    kValueLabel
+        = new QLabel(QString("Nearest %1 neighbor%2:").arg(k == 1 ? "" : QString::number(k)).arg(k == 1 ? "" : "s"));
     kValueLabel->setStyleSheet("color: #00aaff; font-size: 14px; font-weight: bold;");
     kValueLabel->setAlignment(Qt::AlignCenter);
     leftLayout->addWidget(kValueLabel);
@@ -212,7 +211,7 @@ void KNN::setupKNNPage(QWidget* page)
     rightLayout->addWidget(currentImage, 0, Qt::AlignCenter);
     contentLayout->addWidget(rightContainer, 2);
 
-    vizLayout->addLayout(contentLayout, 1);
+    visualizationLayout->addLayout(contentLayout, 1);
 
     mainLayout->addWidget(visualizationWidget);
 }
@@ -222,7 +221,9 @@ void KNN::setupKNNPage(QWidget* page)
 void KNN::onProgress(const QVariantMap& info)
 {
     skipButton->setDisabled(false);
-    kValueLabel->setText(QString("Nearest %1 Neighbors:").arg(info["k"].toInt()));
+    const int k = info["k"].toInt();
+    kValueLabel->setText(
+        QString("Nearest %1 neighbor%2:").arg(k == 1 ? "" : QString::number(k)).arg(k == 1 ? "" : "s"));
     statusLabel->setText(QString("%1 | Acc: %2% | Image %3/%4")
             .arg(info["isValidation"].toBool() ? "Validation" : "Test")
             .arg(info["accuracy"].toDouble(), 0, 'f', 2)
@@ -318,6 +319,7 @@ void KNN::onPause()
 {
     QMutexLocker locker(&pauseMutex);
     paused = !paused;
+    emit pausedChanged();
     pauseButton->setText(paused ? "Resume" : "Pause");
     if (!paused) {
         pauseCondition.wakeAll();
@@ -434,8 +436,7 @@ void KNN::computeDistances(const Data& queryPoint)
             __m256i q_pixels = _mm256_loadu_si256((__m256i*)(qptr + i));
             __m256i t_pixels = _mm256_loadu_si256((__m256i*)(tptr + i));
             // Compute absolute difference with |a-b| (saturating subtract trick)
-            __m256i diff = _mm256_or_si256(
-                _mm256_subs_epu8(q_pixels, t_pixels), _mm256_subs_epu8(t_pixels, q_pixels));
+            __m256i diff = _mm256_or_si256(_mm256_subs_epu8(q_pixels, t_pixels), _mm256_subs_epu8(t_pixels, q_pixels));
             // need to split into low/high 16 bytes
             __m256i diff_lo = _mm256_unpacklo_epi8(diff, zero);
             __m256i diff_hi = _mm256_unpackhi_epi8(diff, zero);

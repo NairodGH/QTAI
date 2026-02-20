@@ -2,13 +2,19 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 
+// qmllint disable unqualified
+// qmllint disable missing-property
+
 Rectangle {
     id: root
     width: 1200
     height: 800
-    color: "#252525"
+    color: "#1e1e1e"
 
     property var qtai: QTAI
+    property Component mnistImageComponent: Component {
+        MNISTImage {}
+    }
 
     Connections {
         target: qtai
@@ -18,7 +24,7 @@ Rectangle {
         anchors.fill: parent
         spacing: 0
 
-        // Top bar
+        // top bar
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
@@ -56,14 +62,15 @@ Rectangle {
                 TabBar {
                     id: tabBar
                     currentIndex: qtai ? qtai.currentIndex : 0
-                    onCurrentIndexChanged: if (qtai) qtai.currentIndex = currentIndex
+                    onCurrentIndexChanged: if (qtai)
+                        qtai.currentIndex = currentIndex
                     Layout.fillWidth: true
                     spacing: 0
 
                     Repeater {
                         model: ["KNN", "KMC"]
                         TabButton {
-                            text: modelData // ^ names from model 
+                            text: modelData // ^ names from model
                             height: 30
                             background: Rectangle {
                                 color: parent.checked ? "#404040" : (parent.hovered ? "#3d3d3d" : "#1e1e1e")
@@ -84,57 +91,63 @@ Rectangle {
             }
         }
 
+        // content
         StackLayout {
             id: stackLayout
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: tabBar.currentIndex
 
-            Loader {
-                id: knn
-                source: "knn.qml"  // Path relative to qtai.qml
-                asynchronous: true  // Optional, for smoother loading
-                onLoaded: {
-                    knn.item.knn = qtai.algorithms[0]
-                }
-            }
+            Repeater {
+                model: [
+                    {
+                        name: "KNN",
+                        index: 0
+                    },
+                    {
+                        name: "KMC",
+                        index: 1
+                    }
+                ]
 
-            // KMC Page (index 1)
-            Rectangle {
-                color: "#1e1e1e"
-                ColumnLayout {
-                    anchors.centerIn: parent
-                    width: Math.min(parent.width - 80, 600)
-                    spacing: 20
+                Item {
+                    property int index: modelData.index
+                    property string name: modelData.name
+                    MouseArea {
+                        id: clickArea
+                        anchors.fill: parent
+                        visible: qtai ? !qtai.algorithms[index] : true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: qtai.onContentClicked()
 
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        text: "" // based data loaded or not
-                        color: "#ffffff"
-                        font.pixelSize: 14
-                        horizontalAlignment: Text.AlignHCenter
-                        wrapMode: Text.WordWrap
+                        ColumnLayout {
+                            anchors.centerIn: parent
+                            width: Math.min(parent.width - 80, 600)
+                            spacing: 20
+
+                            Text {
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.fillWidth: true
+                                text: qtai ? qtai.loadingStatusText.arg(name) : ""
+                                color: "#ffffff"
+                                font.pixelSize: 14
+                                horizontalAlignment: Text.AlignHCenter
+                                wrapMode: Text.WordWrap
+                            }
+                        }
                     }
 
-                    Rectangle {
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        height: 8
-                        color: "#2d2d2d"
-                        radius: 4
-                        visible: true // based on data loaded or not
-
-                        Rectangle {
-                            width: 0 // based on width and loading progress
-                            height: parent.height
-                            color: "#00aaff"
-                            radius: 4
-                            Behavior on width {
-                                NumberAnimation {
-                                    duration: 300
-                                    easing.type: Easing.InOutQuad
-                                }
+                    Loader {
+                        id: contentLoader
+                        anchors.fill: parent
+                        visible: qtai ? qtai.algorithms[index] : true
+                        source: name.toLowerCase() + ".qml"
+                        active: qtai ? qtai.algorithms[index] !== null : true
+                        asynchronous: true
+                        onLoaded: {
+                            if (item) {
+                                item.algorithm = qtai.algorithms[index];
+                                item.mnistImageComponent = root.mnistImageComponent;
                             }
                         }
                     }
@@ -143,7 +156,7 @@ Rectangle {
         }
     }
 
-    // MNIST Image component
+    // mnist image visualizer used by algorithms
     component MNISTImage: Rectangle {
         id: imageRect
         property var imageData: []
@@ -164,7 +177,7 @@ Rectangle {
                 if (!imageRect.imageData || imageRect.imageData.length !== 784)
                     return;
                 var ctx = getContext("2d");
-                ctx.imageSmoothingEnabled = false; // keep smoothing disabled for pixel look
+                ctx.imageSmoothingEnabled = false;
                 ctx.clearRect(0, 0, width, height);
                 var cellWidth = width / 28;
                 var cellHeight = height / 28;

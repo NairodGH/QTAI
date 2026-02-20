@@ -7,6 +7,8 @@ class QTAI : public QMainWindow {
     Q_OBJECT
     // exposes to qml bindings for reactive UI updates
     Q_PROPERTY(int currentIndex READ getCurrentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+    Q_PROPERTY(AlgorithmArray algorithms READ getAlgorithms NOTIFY algorithmsChanged)
+    Q_PROPERTY(QString loadingStatusText READ getLoadingStatusText NOTIFY loadingStatusChanged)
 
 public:
     explicit QTAI(QWidget* parent = nullptr);
@@ -18,15 +20,19 @@ public:
 
     int getCurrentIndex() const { return currentIndex; }
     void setCurrentIndex(int index);
+    AlgorithmArray getAlgorithms() const { return algorithms; }
+    QString getLoadingStatusText() const { return loadingStatus; }
+
     ETL* etl;
     std::vector<QWidget*> widgets;
-    std::array<QThread*, 2> algorithms {};
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 
 signals:
     void currentIndexChanged();
+    void algorithmsChanged();
+    void loadingStatusChanged();
 
 private slots:
     void onLoadingComplete(DatasetInfo info);
@@ -37,11 +43,12 @@ private:
     void createWidgets();
     void createQML();
 
-    static constexpr std::array<const char*, 2> names{ "KNN", "KMC" };
-    DatasetInfo datasetInfo;
-    bool dataLoaded = false;
+    static constexpr std::array<const char*, 2> names { "KNN", "KMC" };
     bool isQMLMode = false;
+
     int currentIndex = 0;
+    AlgorithmArray algorithms { nullptr, nullptr };
+    QString loadingStatus = "Loading dataset...\n\nOnce it's done, click to start training %1";
 
     // everything Qt type inherit from QObject, which deletes its copy and move constructors so must be pointer
     QStackedWidget* stackedWidget;

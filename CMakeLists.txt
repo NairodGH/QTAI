@@ -19,23 +19,14 @@ qt_add_executable(QTAI
     include/main.hpp
     include/qtai.hpp
     include/etl.hpp
+    include/algorithm.hpp
     include/knn.hpp
 )
 
 if(MSVC)
-  target_compile_options(QTAI PRIVATE
-    $<$<CONFIG:Release>:/O2>
-    $<$<CONFIG:RelWithDebInfo>:/O2>
-    $<$<CONFIG:MinSizeRel>:/O2>
-    /arch:AVX2
-  )
+    target_compile_options(QTAI PRIVATE /O2 /arch:AVX2)
 else()
-  target_compile_options(QTAI PRIVATE
-    $<$<CONFIG:Release>:-O2>
-    $<$<CONFIG:RelWithDebInfo>:-O2>
-    $<$<CONFIG:MinSizeRel>:-O2>
-    -march=native
-  )
+    target_compile_options(QTAI PRIVATE -O2 -march=native)
 endif()
 
 qt_add_qml_module(QTAI
@@ -44,6 +35,7 @@ qt_add_qml_module(QTAI
     QML_FILES
         qml/qtai.qml
         qml/knn.qml
+        qml/kmc.qml
 )
 
 qt_add_resources(QTAI "mnist_data"

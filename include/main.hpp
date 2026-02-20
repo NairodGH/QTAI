@@ -22,15 +22,20 @@
 #include <algorithm>
 #include <cerrno>
 #include <cmath>
+#include <cstdint>
 #include <cstring>
 #include <limits>
 #include <map>
 #include <random>
 #include <string>
 #include <vector>
-#include <cstdint>
 
 class ETL;
 class KNN;
 class QTAI;
+class DatasetInfo;
 class Data;
+class Algorithm;
+
+using AlgorithmArray = QList<Algorithm*>;
+Q_DECLARE_METATYPE(AlgorithmArray)
